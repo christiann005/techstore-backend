@@ -1,0 +1,37 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+
+@Schema({ timestamps: true, collection: 'products' })
+export class ProductDocument extends Document {
+  @Prop({ required: true, index: true })
+  name: string;
+
+  @Prop({ required: true, unique: true, index: true })
+  sku: string;
+
+  @Prop({ required: true, index: true })
+  brand: string;
+
+  @Prop({ required: true })
+  description: string;
+
+  @Prop({ required: true, type: Number })
+  basePrice: number;
+
+  @Prop({ type: [String], index: true })
+  categories: string[];
+
+  @Prop({ type: [String] })
+  images: string[];
+
+  @Prop({ type: Map, of: String }) // Flexibilidad total para especificaciones técnicas
+  specifications: Map<string, any>;
+
+  @Prop({ default: 0 })
+  rating: number;
+
+  @Prop({ default: true })
+  isActive: boolean;
+}
+
+export const ProductSchema = SchemaFactory.createForClass(ProductDocument);
