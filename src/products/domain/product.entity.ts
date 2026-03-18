@@ -1,3 +1,12 @@
+export class Review {
+  constructor(
+    public readonly userName: string,
+    public readonly rating: number,
+    public readonly comment: string,
+    public readonly createdAt?: Date,
+  ) {}
+}
+
 export class Product {
   constructor(
     public readonly id: string,
@@ -10,6 +19,7 @@ export class Product {
     public images: string[],
     public specifications: Record<string, any>, // Para specs técnicas (CPU, RAM, etc.)
     public rating: number,
+    public reviews: Review[],
     public isActive: boolean,
     public createdAt: Date,
     public updatedAt: Date,

@@ -23,7 +23,7 @@ export class PaymentsService {
         amount: Math.round(amount * 100), // Convertir a centavos
         currency: 'usd',
         metadata: { orderId },
-        automatic_payment_methods: { enabled: true },
+        payment_method_types: ['card', 'cashapp', 'amazon_pay'],
       });
 
       return {

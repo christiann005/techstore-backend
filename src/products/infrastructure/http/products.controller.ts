@@ -1,18 +1,55 @@
-import { Controller, Get, Post, Param, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Param, NotFoundException, Query, Body } from '@nestjs/common';
 import { ProductsService } from '../../application/products.service';
+import { IsOptional, IsString, IsNumber } from 'class-validator';
+import { Type } from 'class-transformer';
+
+// DTO local para validación y transformación
+export class FilterProductsDto {
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  @IsOptional()
+  @IsString()
+  category?: string;
+
+  @IsOptional()
+  @IsString()
+  brand?: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  minPrice?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  maxPrice?: number;
+}
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get()
-  async findAll() {
-    return this.productsService.getAllProducts();
+  async findAll(@Query() filters: FilterProductsDto) {
+    return this.productsService.getAllProducts(filters);
   }
 
   @Get(':sku')
   async findOne(@Param('sku') sku: string) {
     const product = await this.productsService.getProductBySku(sku);
+    if (!product) throw new NotFoundException('Product not found');
+    return product;
+  }
+
+  @Post(':sku/reviews')
+  async addReview(
+    @Param('sku') sku: string,
+    @Body() reviewData: { userName: string; rating: number; comment: string }
+  ) {
+    const product = await this.productsService.addReviewToProduct(sku, reviewData as any);
     if (!product) throw new NotFoundException('Product not found');
     return product;
   }

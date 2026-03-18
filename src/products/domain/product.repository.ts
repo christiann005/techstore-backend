@@ -1,11 +1,20 @@
-import { Product } from './product.entity';
+import { Product, Review } from './product.entity';
+
+export class ProductFilters {
+  name?: string;
+  category?: string;
+  brand?: string;
+  minPrice?: number;
+  maxPrice?: number;
+}
 
 export interface IProductRepository {
-  findAll(): Promise<Product[]>;
+  findAll(filters?: ProductFilters): Promise<Product[]>;
   findById(id: string): Promise<Product | null>;
   findBySku(sku: string): Promise<Product | null>;
   create(product: Partial<Product>): Promise<Product>;
   update(id: string, product: Partial<Product>): Promise<Product | null>;
+  addReview(sku: string, review: Review): Promise<Product | null>;
   delete(id: string): Promise<boolean>;
   seed(products: Partial<Product>[]): Promise<void>;
 }

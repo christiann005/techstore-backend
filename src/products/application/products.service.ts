@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { IProductRepository } from '../domain/product.repository';
-import { Product } from '../domain/product.entity';
+import { IProductRepository, ProductFilters } from '../domain/product.repository';
+import { Product, Review } from '../domain/product.entity';
 
 @Injectable()
 export class ProductsService {
@@ -9,8 +9,8 @@ export class ProductsService {
     private readonly productRepository: IProductRepository,
   ) {}
 
-  async getAllProducts(): Promise<Product[]> {
-    return this.productRepository.findAll();
+  async getAllProducts(filters?: ProductFilters): Promise<Product[]> {
+    return this.productRepository.findAll(filters);
   }
 
   async getProductBySku(sku: string): Promise<Product | null> {
@@ -23,6 +23,10 @@ export class ProductsService {
 
   async createProduct(data: Partial<Product>): Promise<Product> {
     return this.productRepository.create(data);
+  }
+
+  async addReviewToProduct(sku: string, review: Review): Promise<Product | null> {
+    return this.productRepository.addReview(sku, review);
   }
 
   async runSeed(products: Partial<Product>[]): Promise<void> {

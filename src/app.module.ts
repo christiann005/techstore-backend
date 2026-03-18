@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MongooseModule } from '@nestjs/mongoose';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProductsModule } from './products/products.module';
@@ -18,6 +19,9 @@ import { PaymentsModule } from './payments/payments.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
+
+    // Habilitar eventos de dominio
+    EventEmitterModule.forRoot(),
 
     // Conexión a MySQL (Relacional/Transaccional)
     TypeOrmModule.forRootAsync({

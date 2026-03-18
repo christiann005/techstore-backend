@@ -5,6 +5,9 @@ import { OrderItemEntity } from './infrastructure/persistence/order-item.entity'
 import { OrdersService } from './application/orders.service';
 import { OrdersController } from './infrastructure/http/orders.controller';
 import { InventoryModule } from '../inventory/inventory.module';
+import { IOrderRepository } from './domain/order.repository';
+import { TypeOrmOrderRepository } from './infrastructure/persistence/typeorm-order.repository';
+import { OrderNotifierListener } from './application/listeners/order-notifier.listener';
 
 @Module({
   imports: [
@@ -12,7 +15,14 @@ import { InventoryModule } from '../inventory/inventory.module';
     InventoryModule,
   ],
   controllers: [OrdersController],
-  providers: [OrdersService],
+  providers: [
+    OrdersService,
+    OrderNotifierListener,
+    {
+      provide: IOrderRepository,
+      useClass: TypeOrmOrderRepository,
+    },
+  ],
   exports: [OrdersService],
 })
 export class OrdersModule {}

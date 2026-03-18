@@ -30,6 +30,19 @@ export class ProductDocument extends Document {
   @Prop({ default: 0 })
   rating: number;
 
+  @Prop({
+    type: [
+      {
+        userName: String,
+        rating: Number,
+        comment: String,
+        createdAt: { type: Date, default: Date.now },
+      },
+    ],
+    default: [],
+  })
+  reviews: any[];
+
   @Prop({ default: true })
   isActive: boolean;
 }

@@ -1,18 +1,21 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
+import { Injectable, BadRequestException, NotFoundException, Inject } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { OrderEntity, OrderStatus } from '../infrastructure/persistence/order.entity';
-import { InventoryEntity } from '../../inventory/infrastructure/persistence/inventory.entity';
 import { OrderItemEntity } from '../infrastructure/persistence/order-item.entity';
+import { IOrderRepository } from '../domain/order.repository';
+import { IInventoryRepository } from '../../inventory/domain/inventory.repository';
+import { OrderCreatedEvent } from '../domain/events/order-created.event';
 
 @Injectable()
 export class OrdersService {
   constructor(
-    @InjectRepository(OrderEntity)
-    private readonly orderRepository: Repository<OrderEntity>,
-    @InjectRepository(InventoryEntity)
-    private readonly inventoryRepository: Repository<InventoryEntity>,
+    @Inject(IOrderRepository)
+    private readonly orderRepository: IOrderRepository,
+    @Inject(IInventoryRepository)
+    private readonly inventoryRepository: IInventoryRepository,
     private readonly dataSource: DataSource,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async createOrder(userId: string, items: any[]): Promise<OrderEntity> {
@@ -25,11 +28,8 @@ export class OrdersService {
       const orderItems: OrderItemEntity[] = [];
 
       for (const item of items) {
-        // 1. Verificar Stock Atómico
-        const inventory = await queryRunner.manager.findOne(InventoryEntity, {
-          where: { productId: item.productId },
-          lock: { mode: 'pessimistic_write' }, // Bloquear fila para evitar condiciones de carrera
-        });
+        // 1. Verificar Stock Atómico usando el repositorio abstraído con el manager de la transacción
+        const inventory = await this.inventoryRepository.findByProductId(item.productId, queryRunner.manager);
 
         if (!inventory || inventory.stock < item.quantity) {
           throw new BadRequestException(`Insufficient stock for product ID: ${item.productId}`);
@@ -37,16 +37,16 @@ export class OrdersService {
 
         // 2. Descontar Stock
         inventory.stock -= item.quantity;
-        await queryRunner.manager.save(inventory);
+        await this.inventoryRepository.save(inventory, queryRunner.manager);
 
         // 3. Calcular Total y crear item
-        totalAmount += item.price * item.quantity;
         const orderItem = new OrderItemEntity();
         orderItem.productId = item.productId;
         orderItem.productName = item.productName;
         orderItem.quantity = item.quantity;
         orderItem.price = item.price;
         orderItems.push(orderItem);
+        totalAmount += item.price * item.quantity;
       }
 
       // 4. Crear el pedido
@@ -56,8 +56,11 @@ export class OrdersService {
       order.status = OrderStatus.PENDING;
       order.items = orderItems;
 
-      const savedOrder = await queryRunner.manager.save(order);
+      const savedOrder = await this.orderRepository.saveWithManager(order, queryRunner.manager);
       await queryRunner.commitTransaction();
+
+      // Emitir Evento de Dominio (Desacoplado y Asíncrono)
+      this.eventEmitter.emit('order.created', new OrderCreatedEvent(savedOrder));
 
       return savedOrder;
     } catch (err) {
@@ -69,17 +72,16 @@ export class OrdersService {
   }
 
   async findUserOrders(userId: string) {
-    return this.orderRepository.find({
-      where: { userId },
-      relations: ['items'],
-      order: { createdAt: 'DESC' },
-    });
+    return this.orderRepository.findByUserId(userId);
+  }
+
+  async getAllOrders() {
+    return this.orderRepository.findAll();
   }
 
   async updateOrderStatus(id: string, status: OrderStatus) {
-    const order = await this.orderRepository.findOne({ where: { id } });
+    const order = await this.orderRepository.updateStatus(id, status);
     if (!order) throw new NotFoundException('Order not found');
-    order.status = status;
-    return this.orderRepository.save(order);
+    return order;
   }
 }
