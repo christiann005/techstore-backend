@@ -57,12 +57,64 @@ export class ProductsController {
   @Post('seed')
   async seed() {
     const productsSeed = [
-      // 1-10 Laptops
-      { name: 'MacBook Pro 14 M3', sku: 'MBP-14-M3', brand: 'Apple', basePrice: 1999, categories: ['Laptops'], images: ['https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=800'], specifications: { cpu: 'M3 Pro', ram: '16GB', storage: '512GB SSD' }, description: 'Professional laptop for creators.' },
-      { name: 'Dell XPS 13', sku: 'DELL-XPS-13', brand: 'Dell', basePrice: 1299, categories: ['Laptops'], images: ['https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&q=80&w=800'], specifications: { cpu: 'Intel i7', ram: '16GB', storage: '512GB SSD' }, description: 'Ultra-thin Windows laptop.' },
-      { name: 'ASUS ROG Zephyrus G14', sku: 'ASUS-ROG-G14', brand: 'ASUS', basePrice: 1599, categories: ['Laptops', 'Gaming'], images: ['https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&q=80&w=800'], specifications: { cpu: 'Ryzen 9', gpu: 'RTX 4060', ram: '16GB' }, description: 'Compact gaming beast.' },
-      { name: 'Lenovo ThinkPad X1 Carbon', sku: 'THINK-X1-C', brand: 'Lenovo', basePrice: 1450, categories: ['Laptops', 'Business'], images: ['https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?auto=format&fit=crop&q=80&w=800'], specifications: { cpu: 'Intel i7', ram: '32GB' }, description: 'Standard for business professionals.' },
-      { name: 'Razer Blade 15', sku: 'RAZER-B15', brand: 'Razer', basePrice: 2499, categories: ['Laptops', 'Gaming'], images: ['https://images.unsplash.com/photo-1550009158-9ebf69173e03?auto=format&fit=crop&q=80&w=800'], specifications: { gpu: 'RTX 4080', screen: '240Hz OLED' }, description: 'Premium gaming laptop.' },
+      // 1-10 Laptops (Real Info)
+      { 
+        name: 'MacBook Pro 14 M3', 
+        sku: 'MBP-14-M3', 
+        brand: 'Apple', 
+        basePrice: 1999, 
+        categories: ['Laptops'], 
+        images: ['https://www.apple.com/v/macbook-pro/ak/images/overview/welcome/hero_endframe__e9v6gn886ms2_large.jpg'], 
+        officialUrl: 'https://www.apple.com/macbook-pro/',
+        specifications: { cpu: 'M3 Pro', ram: '16GB', storage: '512GB SSD' }, 
+        description: 'The most advanced chips ever built for a personal computer.' 
+      },
+      { 
+        name: 'Dell XPS 13', 
+        sku: 'DELL-XPS-13', 
+        brand: 'Dell', 
+        basePrice: 1299, 
+        categories: ['Laptops'], 
+        images: ['https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/dell-client-products/notebooks/xps-notebooks/xps-13-9340/media-gallery/silver/touch/laptop-xps-13-9340-t-silver-gallery-1.psd?fmt=pjpg&pscan=auto&scl=1&wid=3491&hei=2077&qlt=100,1&resMode=sharp2&size=3491,2077&chrss=full&imwidth=5000'], 
+        officialUrl: 'https://www.dell.com/en-us/shop/dell-laptops/xps-13-laptop/spd/xps-13-9340-laptop',
+        specifications: { cpu: 'Intel Core Ultra 7', ram: '16GB', storage: '512GB SSD' }, 
+        description: 'Iconic design. Immersive 13.4-inch display. All-day battery life.' 
+      },
+      { 
+        name: 'ASUS ROG Zephyrus G14', 
+        sku: 'ASUS-ROG-G14', 
+        brand: 'ASUS', 
+        basePrice: 1599, 
+        categories: ['Laptops', 'Gaming'], 
+        images: ['https://dlcdnwebimgs.asus.com/gain/06800063-8CE3-4A1E-B6BD-68000638CE3F/w1000/h732'], 
+        officialUrl: 'https://rog.asus.com/laptops/rog-zephyrus/rog-zephyrus-g14-2024/',
+        specifications: { cpu: 'Ryzen 9', gpu: 'RTX 4060', ram: '16GB' }, 
+        description: 'The world’s most powerful 14-inch gaming laptop is back and better than ever.' 
+      },
+      { 
+        name: 'Lenovo ThinkPad X1 Carbon Gen 12', 
+        sku: 'THINK-X1-C', 
+        brand: 'Lenovo', 
+        basePrice: 1450, 
+        categories: ['Laptops', 'Business'], 
+        images: ['https://p1-ofp.static.pub//fes/cms/2023/12/14/ovsvvmd8iv68ofskvgt60nyv6aq60v144143.png'], 
+        officialUrl: 'https://www.lenovo.com/us/en/p/laptops/thinkpad/thinkpadx1/thinkpad-x1-carbon-gen-12-(14-inch-intel)/len101t0083',
+        specifications: { cpu: 'Intel Core Ultra 5', ram: '32GB' }, 
+        description: 'Legendary durability and professional-grade performance.' 
+      },
+      { 
+        name: 'Razer Blade 15', 
+        sku: 'RAZER-B15', 
+        brand: 'Razer', 
+        basePrice: 2499, 
+        categories: ['Laptops', 'Gaming'], 
+        images: ['https://assets2.razerzone.com/images/pnx.assets/07996dfcc00066cd6060606060606060/razer-blade-15-2023-laptop-500x500.png'], 
+        officialUrl: 'https://www.razer.com/gaming-laptops/razer-blade-15',
+        specifications: { gpu: 'RTX 4080', screen: '240Hz QHD' }, 
+        description: 'The ultimate 15-inch gaming laptop, now featuring more power than ever.' 
+      },
+
+      // Resto de productos (con placeholders por ahora)
       { name: 'HP Spectre x360', sku: 'HP-SPEC-360', brand: 'HP', basePrice: 1100, categories: ['Laptops'], images: ['https://images.unsplash.com/photo-1544006659-f0b21f04cb1d?auto=format&fit=crop&q=80&w=800'], specifications: { features: 'Convertible 2-in-1' }, description: 'Versatile and elegant.' },
       { name: 'Acer Swift 5', sku: 'ACER-SW5', brand: 'Acer', basePrice: 899, categories: ['Laptops'], images: ['https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&q=80&w=800'], specifications: { weight: '1kg' }, description: 'Feather-light portable.' },
       { name: 'Surface Laptop 5', sku: 'MS-SURF-5', brand: 'Microsoft', basePrice: 999, categories: ['Laptops'], images: ['https://images.unsplash.com/photo-1661961111184-11273050ad82?auto=format&fit=crop&q=80&w=800'], specifications: { display: 'PixelSense' }, description: 'Premium Microsoft experience.' },

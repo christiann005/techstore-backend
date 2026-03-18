@@ -24,7 +24,11 @@ export class ProductDocument extends Document {
   @Prop({ type: [String] })
   images: string[];
 
-  @Prop({ type: Map, of: String }) // Flexibilidad total para especificaciones técnicas
+  @Prop()
+  officialUrl: string;
+
+  @Prop({ type: Map, of: String })
+ // Flexibilidad total para especificaciones técnicas
   specifications: Map<string, any>;
 
   @Prop({ default: 0 })
