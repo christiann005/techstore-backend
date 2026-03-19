@@ -11,6 +11,8 @@ import { AuthModule } from './auth/auth.module';
 import { OrdersModule } from './orders/orders.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { PaymentsModule } from './payments/payments.module';
+import { EventsModule } from './events/events.module';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
@@ -18,6 +20,26 @@ import { PaymentsModule } from './payments/payments.module';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+    }),
+
+    // Configuración de Correo
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        transport: {
+          host: config.get('MAIL_HOST'),
+          port: config.get('MAIL_PORT'),
+          secure: false, // true for 465, false for other ports
+          auth: {
+            user: config.get('MAIL_USER'),
+            pass: config.get('MAIL_PASS'),
+          },
+        },
+        defaults: {
+          from: config.get('MAIL_FROM'),
+        },
+      }),
     }),
 
     // Habilitar eventos de dominio
@@ -54,6 +76,7 @@ import { PaymentsModule } from './payments/payments.module';
     InventoryModule,
     OrdersModule,
     PaymentsModule,
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

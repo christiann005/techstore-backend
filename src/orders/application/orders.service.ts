@@ -6,6 +6,7 @@ import { OrderItemEntity } from '../infrastructure/persistence/order-item.entity
 import { IOrderRepository } from '../domain/order.repository';
 import { IInventoryRepository } from '../../inventory/domain/inventory.repository';
 import { OrderCreatedEvent } from '../domain/events/order-created.event';
+import { EventsGateway } from '../../events/events.gateway';
 
 @Injectable()
 export class OrdersService {
@@ -16,6 +17,7 @@ export class OrdersService {
     private readonly inventoryRepository: IInventoryRepository,
     private readonly dataSource: DataSource,
     private readonly eventEmitter: EventEmitter2,
+    private readonly eventsGateway: EventsGateway,
   ) {}
 
   async createOrder(userId: string, items: any[]): Promise<OrderEntity> {
@@ -43,6 +45,7 @@ export class OrdersService {
         const orderItem = new OrderItemEntity();
         orderItem.productId = item.productId;
         orderItem.productName = item.productName;
+        orderItem.productImage = item.productImage; // Nuevo campo snapshot
         orderItem.quantity = item.quantity;
         orderItem.price = item.price;
         orderItems.push(orderItem);
@@ -82,6 +85,10 @@ export class OrdersService {
   async updateOrderStatus(id: string, status: OrderStatus) {
     const order = await this.orderRepository.updateStatus(id, status);
     if (!order) throw new NotFoundException('Order not found');
+    
+    // Emitir Socket Event
+    this.eventsGateway.emitOrderStatusUpdate(order.userId, order.id, status);
+    
     return order;
   }
 }

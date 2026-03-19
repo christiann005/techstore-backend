@@ -24,4 +24,10 @@ export class UsersService {
   async update(id: string, user: Partial<User>): Promise<User | null> {
     return this.userRepository.update(id, user);
   }
+
+  async updateByEmail(email: string, user: Partial<User>): Promise<User | null> {
+    const existing = await this.findByEmail(email);
+    if (!existing) return null;
+    return this.userRepository.update(existing.id, user);
+  }
 }

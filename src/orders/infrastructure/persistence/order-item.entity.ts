@@ -12,6 +12,9 @@ export class OrderItemEntity {
   @Column()
   productName: string;
 
+  @Column({ nullable: true })
+  productImage: string;
+
   @Column('int')
   quantity: number;
 

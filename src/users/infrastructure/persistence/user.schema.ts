@@ -19,6 +19,9 @@ export class UserDocument extends Document {
   @Prop({ type: [String], default: [] })
   addresses: string[];
 
+  @Prop({ default: false })
+  isVerified: boolean;
+
   @Prop({ default: true })
   isActive: boolean;
 }

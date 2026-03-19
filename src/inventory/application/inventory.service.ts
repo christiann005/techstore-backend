@@ -1,11 +1,13 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { IInventoryRepository } from '../domain/inventory.repository';
+import { EventsGateway } from '../../events/events.gateway';
 
 @Injectable()
 export class InventoryService {
   constructor(
     @Inject(IInventoryRepository)
     private readonly repository: IInventoryRepository,
+    private readonly eventsGateway: EventsGateway,
   ) {}
 
   async getAll() {
@@ -18,10 +20,14 @@ export class InventoryService {
     if (!inventory) {
       // Si no existe, lo creamos
       const newInv = { productId, stock } as any;
-      return this.repository.save(newInv);
+      const saved = await this.repository.save(newInv);
+      this.eventsGateway.emitStockUpdate(productId, stock);
+      return saved;
     }
     
     inventory.stock = stock;
-    return this.repository.save(inventory);
+    const saved = await this.repository.save(inventory);
+    this.eventsGateway.emitStockUpdate(productId, stock);
+    return saved;
   }
 }
