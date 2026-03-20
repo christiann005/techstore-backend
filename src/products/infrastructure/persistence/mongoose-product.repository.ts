@@ -22,13 +22,13 @@ export class MongooseProductRepository implements IProductRepository {
       doc.basePrice,
       doc.categories,
       doc.images,
-      doc.model3dUrl, // Nuevo argumento: model3dUrl
       Object.fromEntries(doc.specifications || new Map()),
       doc.rating,
       doc.reviews || [],
       doc.isActive,
       (doc as any).createdAt,
       (doc as any).updatedAt,
+      doc.model3dUrl, // Ahora va al final
     );
   }
 
