@@ -15,6 +15,7 @@ import { EventsModule } from './events/events.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -23,6 +24,12 @@ import { APP_GUARD } from '@nestjs/core';
       ttl: 60000, // 1 minuto
       limit: 100, // Máximo 100 peticiones globales por minuto por IP
     }]),
+
+    // Configuración de Caché (En Memoria por defecto)
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 600000, // 10 minutos
+    }),
 
     // Configuración global de variables de entorno
     ConfigModule.forRoot({
@@ -56,17 +63,17 @@ import { APP_GUARD } from '@nestjs/core';
     // Habilitar eventos de dominio
     EventEmitterModule.forRoot(),
 
-    // Conexión a MySQL (Relacional/Transaccional)
+    // Conexión a PostgreSQL (Relacional/Transaccional)
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        type: 'mysql',
-        host: config.get<string>('MYSQL_HOST'),
-        port: config.get<number>('MYSQL_PORT'),
-        username: config.get<string>('MYSQL_USER'),
-        password: config.get<string>('MYSQL_PASSWORD'),
-        database: config.get<string>('MYSQL_DATABASE'),
+        type: 'postgres',
+        host: config.get<string>('DB_HOST'),
+        port: config.get<number>('DB_PORT'),
+        username: config.get<string>('DB_USER'),
+        password: config.get<string>('DB_PASSWORD'),
+        database: config.get<string>('DB_NAME'),
         autoLoadEntities: true,
         synchronize: config.get<string>('NODE_ENV') !== 'production',
       }),

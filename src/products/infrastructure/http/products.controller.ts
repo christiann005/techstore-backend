@@ -193,7 +193,157 @@ export class ProductsController {
 
       // ALMACENAMIENTO
       { 
-        name: 'Samsung 990 Pro 2TB NVMe', 
+        name: 'Sony PlayStation 5 Slim', 
+        sku: 'PS5-SLIM-CO', 
+        brand: 'Sony', 
+        basePrice: 2299900, 
+        categories: ['Consolas', 'Gaming'], 
+        images: ['https://gmedia.playstation.com/is/image/SIEPDC/ps5-product-thumbnail-01-en-14sep21?$facebook$'], 
+        specifications: { storage: '1TB SSD', resolution: '4K 120Hz' }, 
+        description: 'La nueva versión Slim de PS5 con lector de discos y diseño elegante.' 
+      },
+      { 
+        name: 'Logitech G502 X Plus Wireless', 
+        sku: 'LOG-G502X-PLUS', 
+        brand: 'Logitech', 
+        basePrice: 599900, 
+        categories: ['Periféricos', 'Mouse'], 
+        images: ['https://resource.logitechg.com/w_692,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/g502x-plus/gallery/g502x-plus-gallery-1-black.png?v=1'], 
+        specifications: { sensor: 'HERO 25K', lighting: 'LIGHTSYNC RGB' }, 
+        description: 'El ratón de gaming más popular del mundo, ahora rediseñado.' 
+      },
+      { 
+        name: 'AMD Ryzen 9 7950X3D', 
+        sku: 'AMD-R9-7950X3D', 
+        brand: 'AMD', 
+        basePrice: 3250000, 
+        categories: ['Procesadores', 'Componentes'], 
+        images: ['https://www.amd.com/system/files/styles/992px/private/2023-01/1741510-ryzen-9-7950x3d-front-1260x709.png?itok=fI8o1-3X'], 
+        specifications: { cores: '16 Cores', threads: '32 Threads', cache: '144MB L3' }, 
+        description: 'El mejor procesador del mundo para gaming con tecnología 3D V-Cache.' 
+      },
+      { 
+        name: 'Sony WH-1000XM5', 
+        sku: 'SONY-XM5-BLK', 
+        brand: 'Sony', 
+        basePrice: 1450000, 
+        categories: ['Audio', 'Headsets'], 
+        images: ['https://www.sony.com.co/image/633457e51578332158652d3a3d538075?fmt=pjpeg&wid=660&hei=660&bgcolor=F1F5F9&qlt=43'], 
+        specifications: { noise_canceling: 'Industry Leading', battery: '30 Hours' }, 
+        description: 'Auriculares inalámbricos con cancelación de ruido líder en la industria.' 
+      },
+      { 
+        name: 'NVIDIA GeForce RTX 4090 Founders Edition', 
+        sku: 'NV-RTX4090-FE', 
+        brand: 'NVIDIA', 
+        basePrice: 10500000, 
+        categories: ['Tarjetas Gráficas', 'Componentes'], 
+        images: ['https://assets.nvidia.platform.otake.io/s3fs-public/2022-09/geforce-rtx-4090-product-photo-001.jpg'], 
+        specifications: { vram: '24GB GDDR6X', architecture: 'Ada Lovelace' }, 
+        description: 'La tarjeta gráfica más potente para creadores y gamers entusiastas.' 
+      },
+      { 
+        name: 'Corsair Dominator Titanium 64GB DDR5', 
+        sku: 'COR-DOM-64GB-DDR5', 
+        brand: 'Corsair', 
+        basePrice: 1650000, 
+        categories: ['Memoria RAM', 'Componentes'], 
+        images: ['https://www.corsair.com/medias/sys_master/images/images/h65/h6f/10103289053214/CMP64GX5M2B6000C30/Gallery/DOMINATOR_TITANIUM_BLACK_DDR5_01.png'], 
+        specifications: { speed: '6000MHz', capacity: '2x32GB' }, 
+        description: 'Memoria DDR5 de alto rendimiento con diseño icónico y refrigeración superior.' 
+      },
+      { 
+        name: 'Elgato Stream Deck MK.2', 
+        sku: 'ELG-SDECK-MK2', 
+        brand: 'Elgato', 
+        basePrice: 650000, 
+        categories: ['Streaming', 'Periféricos'], 
+        images: ['https://assets2.razerzone.com/images/pnx.assets/957d191196614144369e8b919f2a0378/razer-stream-controller-500x500.png'], 
+        specifications: { keys: '15 LCD Keys', connection: 'USB 2.0' }, 
+        description: 'Controla tus transmisiones y flujos de trabajo con solo un toque.' 
+      },
+      { 
+        name: 'Nintendo Switch OLED Mario Edition', 
+        sku: 'NT-SWITCH-OLED-M', 
+        brand: 'Nintendo', 
+        basePrice: 1850000, 
+        categories: ['Consolas', 'Gaming'], 
+        images: ['https://assets.nintendo.com/image/upload/ar_16:9,c_lpad,w_1200,f_auto,q_auto/v1/ncom/en_US/hardware/nintendo-switch-oled-model-mario-red-edition/111000-nintendo-switch-oled-model-mario-red-edition-console-front'], 
+        specifications: { screen: '7" OLED', storage: '64GB' }, 
+        description: 'La consola versátil de Nintendo con colores vibrantes y pantalla OLED.' 
+      },
+      { 
+        name: 'Apple iPad Pro 13" M4', 
+        sku: 'AP-IPAD-M4-13', 
+        brand: 'Apple', 
+        basePrice: 6500000, 
+        categories: ['Tablets', 'Apple'], 
+        images: ['https://www.apple.com/v/ipad-pro/aq/images/overview/closer-look/space-black/finish_space_black__ebh4937zayye_large.jpg'], 
+        specifications: { chip: 'Apple M4', display: 'Ultra Retina XDR' }, 
+        description: 'El iPad más delgado y potente jamás creado con el revolucionario chip M4.' 
+      },
+      { 
+        name: 'Intel Core i9-14900K', 
+        sku: 'INT-I9-14900K', 
+        brand: 'Intel', 
+        basePrice: 2850000, 
+        categories: ['Procesadores', 'Componentes'], 
+        images: ['https://www.intel.com/content/dam/www/central-libraries/us/en/images/processor-i9-badge-16x9.png.rendition.intel.416.234.png'], 
+        specifications: { cores: '24 Cores', boost: '6.0 GHz' }, 
+        description: 'Lidera la tabla de posiciones con el procesador Intel más rápido de la historia.' 
+      },
+      { 
+        name: 'ASUS ROG Swift 360Hz PG259QN', 
+        sku: 'ASUS-ROG-360HZ', 
+        brand: 'ASUS', 
+        basePrice: 2450000, 
+        categories: ['Monitores', 'Gaming'], 
+        images: ['https://dlcdnwebimgs.asus.com/gain/9BD40D5A-676B-4D1D-B8D2-E4B7763690B8/w717/h525'], 
+        specifications: { refresh: '360Hz', panel: 'Fast IPS' }, 
+        description: 'El monitor más rápido para eSports con respuesta ultrarrápida.' 
+      },
+      { 
+        name: 'Keychron Q1 Pro Wireless Custom', 
+        sku: 'KC-Q1-PRO', 
+        brand: 'Keychron', 
+        basePrice: 850000, 
+        categories: ['Periféricos', 'Teclados'], 
+        images: ['https://www.keychron.com/cdn/shop/products/Keychron-Q1-Pro-QMK-VIA-Wireless-Custom-Mechanical-Keyboard-Fully-Assembled-Carbon-Black-1_1800x1800.jpg?v=1676616421'], 
+        specifications: { body: 'Full Aluminum', switches: 'K Pro Red' }, 
+        description: 'Teclado mecánico premium totalmente personalizable y totalmente metálico.' 
+      },
+      { 
+        name: 'Seagate FireCuda 530 4TB with Heatsink', 
+        sku: 'SEA-FC530-4TB', 
+        brand: 'Seagate', 
+        basePrice: 2150000, 
+        categories: ['Storage', 'Componentes'], 
+        images: ['https://www.seagate.com/content/dam/seagate/migrated-assets/www-content/products/gaming-drives/firecuda-530-ssd/images/firecuda-530-ssd-with-heatsink-front-900x900.jpg'], 
+        specifications: { speed: '7300 MB/s', capacity: '4TB NVMe' }, 
+        description: 'Rendimiento de velocidad absoluta para tu PC o PS5.' 
+      },
+      { 
+        name: 'Razer Leviathan V2 Pro', 
+        sku: 'RAZ-LEV-V2PRO', 
+        brand: 'Razer', 
+        basePrice: 1950000, 
+        categories: ['Audio', 'Periféricos'], 
+        images: ['https://assets2.razerzone.com/images/pnx.assets/d984920246a48d8c92a951d143c7b8d7/razer-leviathan-v2-pro-500x500.png'], 
+        specifications: { audio: 'Beamforming Surround', sub: 'Dedicated Subwoofer' }, 
+        description: 'La primera barra de sonido con beamforming y seguimiento de cabeza por IA.' 
+      },
+      { 
+        name: 'SteelSeries Arctis Nova Pro Wireless', 
+        sku: 'SS-NOVA-PRO-W', 
+        brand: 'SteelSeries', 
+        basePrice: 1550000, 
+        categories: ['Audio', 'Gaming'], 
+        images: ['https://media.steelseriescdn.com/thumbs/catalog/items/61520/3815b3762699478f9905663738e41a6b.png.350x280_q100_crop-fit_optimize.png'], 
+        specifications: { audio: 'Hi-Res Audio', hotswap: 'Dual Battery System' }, 
+        description: 'Audio de alta fidelidad con sistema de batería intercambiable para gaming infinito.' 
+      },
+      { 
+        name: 'Samsung 990 Pro 2TB', 
         sku: 'SAM-990-2TB', 
         brand: 'Samsung', 
         basePrice: 850000, 
@@ -202,12 +352,13 @@ export class ProductsController {
         specifications: { speed: '7450 MB/s Read', gen: 'PCIe 4.0' }, 
         description: 'El SSD definitivo para gamers y profesionales.' 
       }
-    ];
+      ];
 
-    await this.productsService.runSeed(productsSeed as any);
-    return { 
-      message: 'Seed exitoso: Catálogo actualizado con 13 productos reales, fotos HD y precios en COP',
+      await this.productsService.runSeed(productsSeed as any);
+      return { 
+      message: 'Seed exitoso: Catálogo expandido con 28 productos de alto nivel, fotos HD y precios en COP',
       count: productsSeed.length 
-    };
-  }
-}
+      };
+      }
+      }
+

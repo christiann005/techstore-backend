@@ -4,6 +4,8 @@ import Stripe from 'stripe';
 import { OrdersService } from '../../orders/application/orders.service';
 import { OrderStatus } from '../../orders/infrastructure/persistence/order.entity';
 
+import { EventEmitter2 } from '@nestjs/event-emitter';
+
 @Injectable()
 export class PaymentsService {
   private stripe: Stripe;
@@ -11,6 +13,7 @@ export class PaymentsService {
   constructor(
     private configService: ConfigService,
     private ordersService: OrdersService,
+    private eventEmitter: EventEmitter2,
   ) {
     const secretKey = this.configService.get<string>('STRIPE_SECRET_KEY');
     if (!secretKey) throw new Error('STRIPE_SECRET_KEY is not defined in .env');
@@ -48,6 +51,13 @@ export class PaymentsService {
       const paymentIntent = event.data.object as Stripe.PaymentIntent;
       const orderId = paymentIntent.metadata.orderId;
       await this.ordersService.updateOrderStatus(orderId, OrderStatus.PAID);
+
+      // Emitir evento para activar el sistema de notificaciones (Correo, etc)
+      this.eventEmitter.emit('order.paid', { 
+        orderId, 
+        amount: paymentIntent.amount / 100, // De centavos a dólares/pesos
+        userEmail: paymentIntent.receipt_email || undefined // Stripe puede proveer el email
+      });
     }
 
     return { received: true };
