@@ -68,6 +68,7 @@ export class ProductsController {
           'https://www.apple.com/v/macbook-pro/ak/images/overview/welcome/hero_endframe__e9v6gn886ms2_large.jpg',
           'https://www.apple.com/v/macbook-pro/ak/images/overview/design/design_performance__chwsq6237i6u_large.jpg'
         ], 
+        model3dUrl: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/FlightHelmet/glTF-Binary/FlightHelmet.glb', // Modelo Pro de Prueba
         specifications: { cpu: 'M3 Max 14-core', ram: '36GB Unified', storage: '1TB SSD' }, 
         description: 'La laptop más potente para profesionales creativos. Pantalla Liquid Retina XDR de 14 pulgadas.' 
       },
@@ -279,6 +280,7 @@ export class ProductsController {
         basePrice: 6500000, 
         categories: ['Tablets', 'Apple'], 
         images: ['https://www.apple.com/v/ipad-pro/aq/images/overview/closer-look/space-black/finish_space_black__ebh4937zayye_large.jpg'], 
+        model3dUrl: 'https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/laptop/model.gltf', // Modelo Laptop de Prueba
         specifications: { chip: 'Apple M4', display: 'Ultra Retina XDR' }, 
         description: 'El iPad más delgado y potente jamás creado con el revolucionario chip M4.' 
       },

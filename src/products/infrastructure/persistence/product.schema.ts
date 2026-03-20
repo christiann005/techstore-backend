@@ -25,6 +25,9 @@ export class ProductDocument extends Document {
   images: string[];
 
   @Prop()
+  model3dUrl: string;
+
+  @Prop()
   officialUrl: string;
 
   @Prop({ type: Map, of: String })

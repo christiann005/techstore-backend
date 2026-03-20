@@ -22,6 +22,7 @@ export class MongooseProductRepository implements IProductRepository {
       doc.basePrice,
       doc.categories,
       doc.images,
+      doc.model3dUrl, // Nuevo argumento: model3dUrl
       Object.fromEntries(doc.specifications || new Map()),
       doc.rating,
       doc.reviews || [],

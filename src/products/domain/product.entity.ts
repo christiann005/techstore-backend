@@ -17,7 +17,9 @@ export class Product {
     public basePrice: number,
     public categories: string[],
     public images: string[],
-    public specifications: Record<string, any>, // Para specs técnicas (CPU, RAM, etc.)
+    public model3dUrl?: string, // Para visor 3D inmersivo
+    public specifications: Record<string, any>, 
+ // Para specs técnicas (CPU, RAM, etc.)
     public rating: number,
     public reviews: Review[],
     public isActive: boolean,
