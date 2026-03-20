@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
+import type { Response } from 'express';
 import { UsersService } from '../../users/application/users.service';
 import { UserRole } from '../../users/domain/user.entity';
 import { VerificationCode } from '../infrastructure/persistence/verification-code.schema';
@@ -56,7 +57,7 @@ export class AuthService {
     return { message: 'Account verified successfully' };
   }
 
-  async login(email: string, pass: string) {
+  async login(email: string, pass: string, response: Response) {
     const user = await this.usersService.findByEmail(email);
     if (!user || !user.password) throw new UnauthorizedException('Invalid credentials');
     
@@ -68,8 +69,18 @@ export class AuthService {
     if (!isMatch) throw new UnauthorizedException('Invalid credentials');
 
     const payload = { sub: user.id, email: user.email, role: user.role };
+    const token = this.jwtService.sign(payload);
+
+    // Inyectar cookie HttpOnly
+    response.cookie('access_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 24 * 60 * 60 * 1000, // 24 horas
+    });
+
     return {
-      access_token: this.jwtService.sign(payload),
+      message: 'Login successful',
       user: {
         id: user.id,
         email: user.email,
@@ -77,6 +88,11 @@ export class AuthService {
         role: user.role,
       },
     };
+  }
+
+  async logout(response: Response) {
+    response.clearCookie('access_token');
+    return { message: 'Logged out successfully' };
   }
 
   async forgotPassword(email: string) {

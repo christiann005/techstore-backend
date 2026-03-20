@@ -19,6 +19,7 @@ export class MongooseUserRepository implements IUserRepository {
       doc.fullName,
       doc.role as UserRole,
       doc.addresses,
+      doc.isVerified,
       doc.isActive,
       (doc as any).createdAt,
       (doc as any).updatedAt,
@@ -37,9 +38,18 @@ export class MongooseUserRepository implements IUserRepository {
   }
 
   async create(user: Partial<User>): Promise<User> {
-    const created = new this.userModel(user);
-    const doc = await created.save();
-    return this.mapToDomain(doc);
+    try {
+      const created = new this.userModel(user);
+      const doc = await created.save();
+      return this.mapToDomain(doc);
+    } catch (err: any) {
+      // Handle duplicate key error from MongoDB (e.g., email already exists)
+      if (err && err.code === 11000) {
+        const { ConflictException } = require('@nestjs/common');
+        throw new ConflictException('Email already in use');
+      }
+      throw err;
+    }
   }
 
   async update(id: string, user: Partial<User>): Promise<User | null> {

@@ -1,28 +1,28 @@
-# Techstore Backend
+# ⚙️ TechStore Pro - Backend (NestJS + TypeScript) 🇨🇴
 
-API REST del proyecto Techstore.
+Este es el núcleo de **TechStore Pro**, un backend de grado empresarial diseñado bajo una arquitectura modular, robusta y segura.
 
-Requisitos
-- Node.js >= 16
-- (Opcional) PostgreSQL
+## 🛡️ Blindaje de Seguridad (OWASP)
+- **Cookies HttpOnly:** Sistema de autenticación JWT guardado en cookies seguras (JS no puede leerlas).
+- **Throttling (Rate Limit):** Límite global de 100 req/min y límite estricto de 5 req/min en login/register.
+- **Validación DTO:** Validación automática de datos entrantes con `class-validator`.
+- **CORS con Credenciales:** Configurado para permitir comunicación segura con el dominio oficial.
 
-Instalación
-1. Clona el repositorio:
-   git clone https://github.com/christiann005/techstore-backend.git
-2. Instala dependencias:
-   npm install
+## 🏗️ Arquitectura e Infraestructura
+- **NestJS:** Framework modular con inyección de dependencias.
+- **Estrategia Dual DB:**
+  - **MySQL (TypeORM):** Usuarios, Transacciones, Órdenes.
+  - **MongoDB (Mongoose):** Catálogo de Productos y Reseñas.
+- **Servicios Integrados:**
+  - **Stripe:** Pasarela de pago segura.
+  - **Mailer Service:** Envío de OTP (One Time Passwords) vía Gmail/SMTP.
 
-Variables de entorno (ejemplo)
-- PORT=3000
-- DATABASE_URL=postgres://user:pass@localhost:5432/dbname
-- JWT_SECRET=tu_secreto
+## 🚀 Cómo Ejecutar (Standalone)
+1. `npm install`
+2. Configura tu `.env` (usa `.env.example`).
+3. `npm run build` (Para compilar TypeScript).
+4. `npm run start:dev` (Ejecución en desarrollo).
 
-Ejecución
-- npm start
-- npm run dev  # si usas nodemon
-
-Contribuir
-1. Crear rama feature/...
-2. Abrir PR con descripción de los cambios
-
-Licencia: MIT
+## 📸 Seed del Catálogo
+Puedes poblar el sistema con productos reales de hardware (NVIDIA, Apple, etc.) haciendo un **POST** a:
+`http://localhost:3000/products/seed`

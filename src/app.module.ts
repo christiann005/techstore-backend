@@ -13,9 +13,17 @@ import { InventoryModule } from './inventory/inventory.module';
 import { PaymentsModule } from './payments/payments.module';
 import { EventsModule } from './events/events.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
+    // Protección contra Fuerza Bruta (Rate Limiting)
+    ThrottlerModule.forRoot([{
+      ttl: 60000, // 1 minuto
+      limit: 100, // Máximo 100 peticiones globales por minuto por IP
+    }]),
+
     // Configuración global de variables de entorno
     ConfigModule.forRoot({
       isGlobal: true,
@@ -34,6 +42,9 @@ import { MailerModule } from '@nestjs-modules/mailer';
           auth: {
             user: config.get('MAIL_USER'),
             pass: config.get('MAIL_PASS'),
+          },
+          tls: {
+            rejectUnauthorized: false,
           },
         },
         defaults: {
@@ -79,6 +90,12 @@ import { MailerModule } from '@nestjs-modules/mailer';
     EventsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}

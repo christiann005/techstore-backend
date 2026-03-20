@@ -10,6 +10,7 @@ export class User {
     public fullName: string,
     public role: UserRole,
     public addresses: string[],
+    public isVerified: boolean,
     public isActive: boolean,
     public createdAt: Date,
     public updatedAt: Date,
