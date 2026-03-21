@@ -119,7 +119,10 @@ export class MongooseProductRepository implements IProductRepository {
     p.reviews.push(review);
 
     // Recalcular Rating Promedio
-    const totalRating = p.reviews.reduce((acc, rev) => acc + (rev.rating ?? 0), 0);
+    const totalRating = p.reviews.reduce(
+      (acc, rev) => acc + (rev.rating ?? 0),
+      0,
+    );
     p.rating = Number((totalRating / p.reviews.length).toFixed(1));
 
     await p.save();
