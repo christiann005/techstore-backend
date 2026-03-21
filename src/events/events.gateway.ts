@@ -19,7 +19,7 @@ export class EventsGateway
   @WebSocketServer() server: Server;
   private logger: Logger = new Logger('EventsGateway');
 
-  afterInit(_server: Server) {
+  afterInit() {
     this.logger.log('WebSocket Gateway Initialized');
   }
 
