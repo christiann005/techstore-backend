@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import * as cookieParser from 'cookie-parser';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { rawBody: true });
@@ -26,7 +26,7 @@ async function bootstrap() {
 
   // Habilitar CORS con credenciales permitidas para cookies
   app.enableCors({
-    origin: ['http://localhost:5173'], // Puerto de Vite por defecto
+    origin: ['http://localhost:5173', 'http://localhost:5174'], // Puertos de Vite
     credentials: true,
   });
 

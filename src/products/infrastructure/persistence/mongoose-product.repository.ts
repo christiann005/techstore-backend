@@ -67,11 +67,12 @@ export class MongooseProductRepository implements IProductRepository {
         query.brand = { $regex: filters.brand, $options: 'i' };
       }
       if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
-        query.basePrice = {};
+        const basePriceFilter: any = {};
         if (filters.minPrice !== undefined)
-          query.basePrice.$gte = filters.minPrice;
+          basePriceFilter.$gte = filters.minPrice;
         if (filters.maxPrice !== undefined)
-          query.basePrice.$lte = filters.maxPrice;
+          basePriceFilter.$lte = filters.maxPrice;
+        query.basePrice = basePriceFilter;
       }
     }
 

@@ -13,17 +13,18 @@ export class MongooseUserRepository implements IUserRepository {
   ) {}
 
   private mapToDomain(doc: UserDocument): User {
+    const d = doc as any;
     return new User(
-      String(doc._id),
-      doc.email,
-      doc.fullName,
-      doc.role,
-      doc.addresses,
-      doc.isVerified,
-      doc.isActive,
-      doc.createdAt as Date,
-      doc.updatedAt as Date,
-      doc.password, // Password al final según el cambio previo en la entidad
+      String(d._id),
+      d.email,
+      d.fullName,
+      d.role,
+      d.addresses,
+      d.isVerified,
+      d.isActive,
+      d.createdAt as Date,
+      d.updatedAt as Date,
+      d.password, // Password al final según el cambio previo en la entidad
     );
   }
 

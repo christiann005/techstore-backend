@@ -23,6 +23,11 @@ Este es el núcleo de **TechStore Pro**, un backend de grado empresarial diseña
 3. `npm run build` (Para compilar TypeScript).
 4. `npm run start:dev` (Ejecución en desarrollo).
 
+## 📄 Documentación de API (Swagger)
+El sistema cuenta con una documentación completa de sus endpoints, incluyendo esquemas de datos y autenticación Bearer.
+- **URL Local:** `http://localhost:4000/api-docs`
+- **Recomendado:** Usa Swagger para probar los flujos de `auth`, `products`, e `inventory`.
+
 ## 📸 Seed del Catálogo
 Puedes poblar el sistema con productos reales de hardware (NVIDIA, Apple, etc.) haciendo un **POST** a:
-`http://localhost:3000/products/seed`
+`http://localhost:4000/products/seed` (o directamente desde Swagger).
