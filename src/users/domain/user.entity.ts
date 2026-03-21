@@ -14,6 +14,8 @@ export class User {
     public isActive: boolean,
     public createdAt: Date,
     public updatedAt: Date,
-    public password?: string, // Opcional al final
+    public password?: string,
+    public twoFactorSecret?: string,
+    public isTwoFactorEnabled: boolean = false,
   ) {}
 }

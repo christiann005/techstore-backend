@@ -23,6 +23,6 @@ import { ProductsController } from './infrastructure/http/products.controller';
       useClass: MongooseProductRepository,
     },
   ],
-  exports: [ProductsService],
+  exports: [ProductsService, IProductRepository],
 })
 export class ProductsModule {}

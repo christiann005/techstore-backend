@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from '../users/users.module';
 import { AuthService } from './application/auth.service';
+import { TwoFactorService } from './application/two-factor.service';
 import { AuthController } from './infrastructure/http/auth.controller';
 import { JwtStrategy } from './infrastructure/strategies/jwt.strategy';
 import {
@@ -31,7 +32,7 @@ import { MailService } from '../common/mail/mail.service';
       }),
     }),
   ],
-  providers: [AuthService, JwtStrategy, MailService],
+  providers: [AuthService, TwoFactorService, JwtStrategy, MailService],
   controllers: [AuthController],
 })
 export class AuthModule {}

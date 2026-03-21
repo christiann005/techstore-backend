@@ -24,6 +24,12 @@ export class UserDocument extends Document {
 
   @Prop({ default: true })
   isActive: boolean;
+
+  @Prop({ select: false }) // Secret de 2FA oculto
+  twoFactorSecret?: string;
+
+  @Prop({ default: false })
+  isTwoFactorEnabled: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserDocument);

@@ -1,33 +1,33 @@
-# ⚙️ TechStore Pro - Backend (NestJS + TypeScript) 🇨🇴
+# TechStore Pro - Backend Core
 
-Este es el núcleo de **TechStore Pro**, un backend de grado empresarial diseñado bajo una arquitectura modular, robusta y segura.
+Backend de alto rendimiento construido con **NestJS**, diseñado bajo principios de Arquitectura Hexagonal y Clean Architecture.
 
-## 🛡️ Blindaje de Seguridad (OWASP)
-- **Cookies HttpOnly:** Sistema de autenticación JWT guardado en cookies seguras (JS no puede leerlas).
-- **Throttling (Rate Limit):** Límite global de 100 req/min y límite estricto de 5 req/min en login/register.
-- **Validación DTO:** Validación automática de datos entrantes con `class-validator`.
-- **CORS con Credenciales:** Configurado para permitir comunicación segura con el dominio oficial.
+## 🚀 Tecnologías y Arquitectura
 
-## 🏗️ Arquitectura e Infraestructura
-- **NestJS:** Framework modular con inyección de dependencias.
-- **Estrategia Dual DB:**
-  - **MySQL (TypeORM):** Usuarios, Transacciones, Órdenes.
-  - **MongoDB (Mongoose):** Catálogo de Productos y Reseñas.
-- **Servicios Integrados:**
-  - **Stripe:** Pasarela de pago segura.
-  - **Mailer Service:** Envío de OTP (One Time Passwords) vía Gmail/SMTP.
+### 🏗️ Estructura de Persistencia Políglota
+El sistema utiliza una estrategia de base de datos híbrida para maximizar eficiencia e integridad:
+*   **PostgreSQL (TypeORM):** Manejo transaccional crítico para **Órdenes** e **Inventario** (Garantía ACID).
+*   **MongoDB (Mongoose):** Catálogo de **Productos** y perfiles de **Usuarios** para flexibilidad de esquemas.
 
-## 🚀 Cómo Ejecutar (Standalone)
-1. `npm install`
-2. Configura tu `.env` (usa `.env.example`).
-3. `npm run build` (Para compilar TypeScript).
-4. `npm run start:dev` (Ejecución en desarrollo).
+### 🛡️ Seguridad Avanzada
+*   **MFA (2FA):** Autenticación de dos factores implementada con TOTP (Google Authenticator/Authy).
+*   **Rate Limiting:** Protección contra fuerza bruta con `Throttler`.
+*   **JWT & Passport:** Gestión de sesiones segura con cookies e interceptores.
 
-## 📄 Documentación de API (Swagger)
-El sistema cuenta con una documentación completa de sus endpoints, incluyendo esquemas de datos y autenticación Bearer.
-- **URL Local:** `http://localhost:4000/api-docs`
-- **Recomendado:** Usa Swagger para probar los flujos de `auth`, `products`, e `inventory`.
+### ⚡ Rendimiento y Escalabilidad
+*   **Distributed Locking:** Sistema de bloqueos por producto para evitar condiciones de carrera en el stock durante compras masivas.
+*   **Caché Avanzada:** Capa de caché con `CacheManager` para acelerar el catálogo.
+*   **Event-Driven Search:** Sincronización automática con motores de búsqueda (Meilisearch/Algolia) mediante eventos de dominio.
 
-## 📸 Seed del Catálogo
-Puedes poblar el sistema con productos reales de hardware (NVIDIA, Apple, etc.) haciendo un **POST** a:
-`http://localhost:4000/products/seed` (o directamente desde Swagger).
+### 💳 Integración de Pagos
+*   **Stripe SDK:** Flujo completo de `PaymentIntents`.
+*   **Webhooks:** Procesamiento asíncrono y seguro de confirmaciones de pago con validación de firma.
+
+## 🛠️ Instalación y Configuración
+
+1.  `npm install`
+2.  Configurar `.env` basado en `.env.example`.
+3.  `npm run start:dev`
+
+## 📖 Documentación de API
+Disponible en `/api-docs` una vez que el servidor esté corriendo (Swagger/OpenAPI).

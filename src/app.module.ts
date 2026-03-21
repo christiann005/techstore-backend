@@ -12,6 +12,7 @@ import { OrdersModule } from './orders/orders.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { PaymentsModule } from './payments/payments.module';
 import { EventsModule } from './events/events.module';
+import { SearchModule } from './search/search.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
@@ -97,6 +98,7 @@ import { CacheModule } from '@nestjs/cache-manager';
     OrdersModule,
     PaymentsModule,
     EventsModule,
+    SearchModule,
   ],
   controllers: [AppController],
   providers: [

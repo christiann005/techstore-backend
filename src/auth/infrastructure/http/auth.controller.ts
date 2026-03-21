@@ -5,14 +5,46 @@ import {
   HttpCode,
   HttpStatus,
   Res,
+  UseGuards,
+  Req,
+  BadRequestException,
 } from '@nestjs/common';
 import { AuthService } from '../../application/auth.service';
+import { TwoFactorService } from '../../application/two-factor.service';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { Throttle } from '@nestjs/throttler';
-import type { Response } from 'express';
+import type { Response, Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly twoFactorService: TwoFactorService,
+  ) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Post('2fa/generate')
+  async generateTwoFactor(@Req() req: Request) {
+    const user = (req as any).user;
+    return this.twoFactorService.generateSecret(user.userId, user.email);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  @Post('2fa/turn-on')
+  async turnOnTwoFactor(@Req() req: Request, @Body() body: { token: string }) {
+    const user = (req as any).user;
+    const isTokenValid = await this.twoFactorService.verifyTwoFactorToken(
+      user.userId,
+      body.token,
+    );
+
+    if (!isTokenValid) {
+      throw new BadRequestException('Invalid authentication code');
+    }
+
+    return { success: true };
+  }
 
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post('register')

@@ -6,6 +6,7 @@ import {
 import { Product, Review } from '../domain/product.entity';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class ProductsService {
@@ -14,6 +15,7 @@ export class ProductsService {
     private readonly productRepository: IProductRepository,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async getAllProducts(filters?: ProductFilters): Promise<Product[]> {
@@ -46,6 +48,10 @@ export class ProductsService {
   async createProduct(data: Partial<Product>): Promise<Product> {
     const product = await this.productRepository.create(data);
     await this.clearProductsCache();
+    
+    // 🔥 Sincronizar con Motor de Búsqueda
+    this.eventEmitter.emit('product.created', product);
+    
     return product;
   }
 
@@ -57,6 +63,9 @@ export class ProductsService {
     if (product) {
       await this.cacheManager.del(`product_sku_${sku}`);
       await this.clearProductsCache();
+      
+      // 🔥 Sincronizar (Actualizar en índice)
+      this.eventEmitter.emit('product.updated', product);
     }
     return product;
   }
