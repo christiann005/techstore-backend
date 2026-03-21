@@ -16,22 +16,40 @@ export class MongooseProductRepository implements IProductRepository {
   ) {}
 
   private mapToDomain(doc: ProductDocument): Product {
+    const d = doc as unknown as {
+      _id: unknown;
+      name: string;
+      sku?: string;
+      brand?: string;
+      description?: string;
+      basePrice?: number;
+      categories?: string[];
+      images?: string[];
+      specifications?: Map<string, unknown>;
+      rating?: number;
+      reviews?: Review[];
+      isActive?: boolean;
+      createdAt?: Date;
+      updatedAt?: Date;
+      model3dUrl?: string;
+    };
+
     return new Product(
-      String(doc._id),
-      doc.name,
-      doc.sku,
-      doc.brand,
-      doc.description,
-      doc.basePrice,
-      doc.categories,
-      doc.images,
-      Object.fromEntries(doc.specifications || new Map()),
-      doc.rating,
-      doc.reviews || [],
-      doc.isActive,
-      doc.createdAt as Date,
-      doc.updatedAt as Date,
-      doc.model3dUrl, // Ahora va al final
+      String(d._id),
+      d.name,
+      d.sku ?? '',
+      d.brand ?? '',
+      d.description ?? '',
+      d.basePrice ?? 0,
+      d.categories ?? [],
+      d.images ?? [],
+      Object.fromEntries(d.specifications || new Map()),
+      d.rating ?? 0,
+      d.reviews ?? [],
+      d.isActive ?? true,
+      d.createdAt as Date,
+      d.updatedAt as Date,
+      d.model3dUrl ?? '', // Ahora va al final
     );
   }
 

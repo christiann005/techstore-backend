@@ -9,7 +9,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(config: ConfigService) {
     super({
       jwtFromRequest: (req: Request) => {
-        const cookies = (req as Request & { cookies?: Record<string, string> })?.cookies;
+        const cookies = (req as Request & { cookies?: Record<string, string> })
+          ?.cookies;
         return cookies?.['access_token'] ?? null;
       },
       ignoreExpiration: false,
