@@ -26,7 +26,7 @@ export class TwoFactorService {
   }
 
   async verifyTwoFactorToken(userId: string, token: string) {
-    const user = await this.usersService.findById(userId);
+    const user = await this.usersService.findByIdWithSecrets(userId);
     if (!user || !user.twoFactorSecret) {
       throw new BadRequestException('MFA not initiated for this user');
     }

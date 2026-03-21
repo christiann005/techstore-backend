@@ -24,7 +24,9 @@ export class MongooseUserRepository implements IUserRepository {
       d.isActive,
       d.createdAt as Date,
       d.updatedAt as Date,
-      d.password, // Password al final según el cambio previo en la entidad
+      d.password,
+      d.twoFactorSecret,
+      d.isTwoFactorEnabled,
     );
   }
 
@@ -38,6 +40,14 @@ export class MongooseUserRepository implements IUserRepository {
 
   async findById(id: string): Promise<User | null> {
     const doc = await this.userModel.findById(id).exec();
+    return doc ? this.mapToDomain(doc) : null;
+  }
+
+  async findByIdWithSecrets(id: string): Promise<User | null> {
+    const doc = await this.userModel
+      .findById(id)
+      .select('+twoFactorSecret') // 🔥 Forzamos que traiga el secreto
+      .exec();
     return doc ? this.mapToDomain(doc) : null;
   }
 

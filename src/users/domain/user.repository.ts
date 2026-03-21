@@ -2,6 +2,7 @@ import { User } from './user.entity';
 
 export interface IUserRepository {
   findById(id: string): Promise<User | null>;
+  findByIdWithSecrets(id: string): Promise<User | null>; // Nuevo método para seguridad
   findByEmail(email: string): Promise<User | null>;
   create(user: Partial<User>): Promise<User>;
   update(id: string, user: Partial<User>): Promise<User | null>;

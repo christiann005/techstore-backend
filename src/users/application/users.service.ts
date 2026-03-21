@@ -17,6 +17,10 @@ export class UsersService {
     return this.userRepository.findById(id);
   }
 
+  async findByIdWithSecrets(id: string): Promise<User | null> {
+    return this.userRepository.findByIdWithSecrets(id);
+  }
+
   async create(user: Partial<User>): Promise<User> {
     return this.userRepository.create(user);
   }
