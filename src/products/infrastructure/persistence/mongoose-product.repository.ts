@@ -54,7 +54,7 @@ export class MongooseProductRepository implements IProductRepository {
   }
 
   async findAll(filters?: ProductFilters): Promise<Product[]> {
-    const query: any = { isActive: true };
+    const query: Record<string, unknown> = { isActive: true };
 
     if (filters) {
       if (filters.name) {
@@ -106,20 +106,23 @@ export class MongooseProductRepository implements IProductRepository {
     const product = await this.productModel.findOne({ sku }).exec();
     if (!product) return null;
 
+    const p = product as unknown as {
+      reviews?: Review[];
+      rating?: number;
+      save: () => Promise<any>;
+    };
+
     // Asegurar que reviews sea un array
-    if (!product.reviews) product.reviews = [];
+    if (!p.reviews) p.reviews = [];
 
     // Agregar reseña
-    product.reviews.push(review);
+    p.reviews.push(review);
 
     // Recalcular Rating Promedio
-    const totalRating = product.reviews.reduce(
-      (acc, rev) => acc + rev.rating,
-      0,
-    );
-    product.rating = Number((totalRating / product.reviews.length).toFixed(1));
+    const totalRating = p.reviews.reduce((acc, rev) => acc + (rev.rating ?? 0), 0);
+    p.rating = Number((totalRating / p.reviews.length).toFixed(1));
 
-    await product.save();
+    await p.save();
     return this.mapToDomain(product);
   }
 
