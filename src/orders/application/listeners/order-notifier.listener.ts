@@ -40,9 +40,7 @@ export class OrderNotifierListener {
       this.logger.log(`📧 Correo de creación enviado exitosamente a ${email}`);
     } catch (error: unknown) {
       const msg = (error as Error).message ?? String(error);
-      this.logger.error(
-        `❌ Error enviando correo de creación: ${msg}`,
-      );
+      this.logger.error(`❌ Error enviando correo de creación: ${msg}`);
     }
   }
 

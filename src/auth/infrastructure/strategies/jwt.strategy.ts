@@ -9,18 +9,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(config: ConfigService) {
     super({
       jwtFromRequest: (req: Request) => {
-        let token = null;
-        if (req && req.cookies) {
-          token = req.cookies['access_token'];
-        }
-        return token;
+        const cookies = (req as Request & { cookies?: Record<string, string> })?.cookies;
+        return cookies?.['access_token'] ?? null;
       },
       ignoreExpiration: false,
       secretOrKey: config.get<string>('JWT_SECRET') || 'defaultSecret',
     });
   }
 
-  validate(payload: unknown) {
+  validate(payload: unknown): { userId: string; email: string; role: string } {
     const p = payload as { sub?: string; email?: string; role?: string };
     return {
       userId: p.sub ?? '',

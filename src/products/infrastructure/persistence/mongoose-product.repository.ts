@@ -17,7 +17,7 @@ export class MongooseProductRepository implements IProductRepository {
 
   private mapToDomain(doc: ProductDocument): Product {
     return new Product(
-      (doc._id as any).toString(),
+      String(doc._id),
       doc.name,
       doc.sku,
       doc.brand,
@@ -29,8 +29,8 @@ export class MongooseProductRepository implements IProductRepository {
       doc.rating,
       doc.reviews || [],
       doc.isActive,
-      (doc as any).createdAt,
-      (doc as any).updatedAt,
+      doc.createdAt as Date,
+      doc.updatedAt as Date,
       doc.model3dUrl, // Ahora va al final
     );
   }
@@ -58,7 +58,7 @@ export class MongooseProductRepository implements IProductRepository {
     }
 
     const docs = await this.productModel.find(query).exec();
-    return docs.map(this.mapToDomain);
+    return docs.map((d) => this.mapToDomain(d));
   }
 
   async findById(id: string): Promise<Product | null> {

@@ -1,4 +1,4 @@
-import { Injectable, Inject, NotFoundException } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { IInventoryRepository } from '../domain/inventory.repository';
 import { EventsGateway } from '../../events/events.gateway';
 
