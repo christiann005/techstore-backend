@@ -16,6 +16,10 @@ El sistema utiliza una estrategia de base de datos híbrida para maximizar efici
 *   **Validación de Entorno Estricta:** Implementación de **Zod** para validación de variables de entorno al arranque (Fail-fast strategy).
 *   **Filtro de Excepciones Global:** Estandarización de todas las respuestas de error del sistema para una integración fluida con el frontend.
 
+### 💎 Calidad de Código y Modernización
+*   **API Future-Proof:** Uso de patrones modernos de Mongoose (`returnDocument: 'after'`) para evitar warnings de obsolescencia.
+*   **Scripts de Administración:** Incluye herramientas CLI personalizadas (`npm run promote-admin`) para gestión segura de roles de usuario.
+
 ### ⚡ Rendimiento y Escalabilidad
 *   **Distributed Locking:** Sistema de bloqueos por producto para evitar condiciones de carrera en el stock durante compras masivas.
 *   **Caché Inteligente:** Capa de caché con `CacheManager` para acelerar el catálogo.
