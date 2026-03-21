@@ -1,5 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { IProductRepository, ProductFilters } from '../domain/product.repository';
+import {
+  IProductRepository,
+  ProductFilters,
+} from '../domain/product.repository';
 import { Product, Review } from '../domain/product.entity';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
@@ -16,7 +19,7 @@ export class ProductsService {
   async getAllProducts(filters?: ProductFilters): Promise<Product[]> {
     const cacheKey = `products_all_${JSON.stringify(filters || {})}`;
     const cached = await this.cacheManager.get<Product[]>(cacheKey);
-    
+
     if (cached) {
       return cached;
     }
@@ -46,7 +49,10 @@ export class ProductsService {
     return product;
   }
 
-  async addReviewToProduct(sku: string, review: Review): Promise<Product | null> {
+  async addReviewToProduct(
+    sku: string,
+    review: Review,
+  ): Promise<Product | null> {
     const product = await this.productRepository.addReview(sku, review);
     if (product) {
       await this.cacheManager.del(`product_sku_${sku}`);

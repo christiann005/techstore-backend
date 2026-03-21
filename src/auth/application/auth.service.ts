@@ -1,4 +1,10 @@
-import { Injectable, UnauthorizedException, ConflictException, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -23,7 +29,7 @@ export class AuthService {
     return Math.floor(100000 + Math.random() * 900000).toString();
   }
 
-  async register(data: any) {
+  async register(data: { email: string; password: string; fullName?: string }) {
     const existing = await this.usersService.findByEmail(data.email);
     if (existing) throw new ConflictException('Email already in use');
 
@@ -48,7 +54,11 @@ export class AuthService {
   }
 
   async verifyCode(email: string, code: string) {
-    const record = await this.verificationModel.findOne({ email, code, type: 'REGISTER' });
+    const record = await this.verificationModel.findOne({
+      email,
+      code,
+      type: 'REGISTER',
+    });
     if (!record) throw new BadRequestException('Invalid or expired code');
 
     await this.usersService.updateByEmail(email, { isVerified: true });
@@ -59,10 +69,13 @@ export class AuthService {
 
   async login(email: string, pass: string, response: Response) {
     const user = await this.usersService.findByEmail(email);
-    if (!user || !user.password) throw new UnauthorizedException('Invalid credentials');
-    
+    if (!user || !user.password)
+      throw new UnauthorizedException('Invalid credentials');
+
     if (!user.isVerified) {
-       throw new UnauthorizedException('Account not verified. Please check your email.');
+      throw new UnauthorizedException(
+        'Account not verified. Please check your email.',
+      );
     }
 
     const isMatch = await bcrypt.compare(pass, user.password);
@@ -90,7 +103,7 @@ export class AuthService {
     };
   }
 
-  async logout(response: Response) {
+  logout(response: Response) {
     response.clearCookie('access_token');
     return { message: 'Logged out successfully' };
   }
@@ -111,7 +124,11 @@ export class AuthService {
   }
 
   async resetPassword(email: string, code: string, newPass: string) {
-    const record = await this.verificationModel.findOne({ email, code, type: 'FORGOT_PASSWORD' });
+    const record = await this.verificationModel.findOne({
+      email,
+      code,
+      type: 'FORGOT_PASSWORD',
+    });
     if (!record) throw new BadRequestException('Invalid or expired code');
 
     const hashedPassword = await bcrypt.hash(newPass, 10);

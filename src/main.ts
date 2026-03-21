@@ -10,12 +10,14 @@ async function bootstrap() {
   // Configuración de Swagger
   const config = new DocumentBuilder()
     .setTitle('TechStore Pro API')
-    .setDescription('Arquitectura de Backend E-Commerce de alto nivel para Hardware')
+    .setDescription(
+      'Arquitectura de Backend E-Commerce de alto nivel para Hardware',
+    )
     .setVersion('1.0')
     .addTag('TechStore')
     .addBearerAuth()
     .build();
-  
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
 
@@ -29,13 +31,16 @@ async function bootstrap() {
   });
 
   // Validación global de datos (DTOs)
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    forbidNonWhitelisted: true,
-    transform: true,
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
-  await app.listen(3000);
-  console.log('🚀 Backend running on: http://localhost:3000');
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  console.log(`🚀 Backend running on: http://localhost:${port}`);
 }
 bootstrap();

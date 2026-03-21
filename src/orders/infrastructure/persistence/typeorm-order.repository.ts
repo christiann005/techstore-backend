@@ -38,14 +38,20 @@ export class TypeOrmOrderRepository implements IOrderRepository {
     });
   }
 
-  async updateStatus(id: string, status: OrderStatus): Promise<OrderEntity | null> {
+  async updateStatus(
+    id: string,
+    status: OrderStatus,
+  ): Promise<OrderEntity | null> {
     const order = await this.findById(id);
     if (!order) return null;
     order.status = status;
     return this.repository.save(order);
   }
 
-  async saveWithManager(order: OrderEntity, manager: EntityManager): Promise<OrderEntity> {
+  async saveWithManager(
+    order: OrderEntity,
+    manager: EntityManager,
+  ): Promise<OrderEntity> {
     return manager.save(order);
   }
 }

@@ -32,31 +32,39 @@ export class PaymentsService {
       return {
         clientSecret: paymentIntent.client_secret,
       };
-    } catch (error) {
-      throw new BadRequestException(error.message);
+    } catch (error: unknown) {
+      const msg = (error as Error).message ?? String(error);
+      throw new BadRequestException(msg);
     }
   }
 
   async handleWebhook(sig: string, payload: Buffer) {
-    const endpointSecret = this.configService.get<string>('STRIPE_WEBHOOK_SECRET');
+    const endpointSecret = this.configService.get<string>(
+      'STRIPE_WEBHOOK_SECRET',
+    );
     let event: Stripe.Event;
 
+    if (!endpointSecret) {
+      throw new BadRequestException('STRIPE_WEBHOOK_SECRET not configured');
+    }
+
     try {
-      event = this.stripe.webhooks.constructEvent(payload, sig, endpointSecret!);
-    } catch (err) {
-      throw new BadRequestException(`Webhook Error: ${err.message}`);
+      event = this.stripe.webhooks.constructEvent(payload, sig, endpointSecret);
+    } catch (err: unknown) {
+      const msg = (err as Error).message ?? String(err);
+      throw new BadRequestException(`Webhook Error: ${msg}`);
     }
 
     if (event.type === 'payment_intent.succeeded') {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent;
+      const paymentIntent = event.data.object;
       const orderId = paymentIntent.metadata.orderId;
       await this.ordersService.updateOrderStatus(orderId, OrderStatus.PAID);
 
       // Emitir evento para activar el sistema de notificaciones (Correo, etc)
-      this.eventEmitter.emit('order.paid', { 
-        orderId, 
+      this.eventEmitter.emit('order.paid', {
+        orderId,
         amount: paymentIntent.amount / 100, // De centavos a dólares/pesos
-        userEmail: paymentIntent.receipt_email || undefined // Stripe puede proveer el email
+        userEmail: paymentIntent.receipt_email || undefined, // Stripe puede proveer el email
       });
     }
 

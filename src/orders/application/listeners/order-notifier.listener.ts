@@ -14,7 +14,9 @@ export class OrderNotifierListener {
     const { order, userEmail } = event;
     const email = userEmail || 'cliente@techstore.com';
 
-    this.logger.log(`🔔 Enviando confirmación de creación para Orden: ${order.id}`);
+    this.logger.log(
+      `🔔 Enviando confirmación de creación para Orden: ${order.id}`,
+    );
 
     try {
       await this.mailerService.sendMail({
@@ -37,12 +39,18 @@ export class OrderNotifierListener {
       });
       this.logger.log(`📧 Correo de creación enviado exitosamente a ${email}`);
     } catch (error) {
-      this.logger.error(`❌ Error enviando correo de creación: ${error.message}`);
+      this.logger.error(
+        `❌ Error enviando correo de creación: ${error.message}`,
+      );
     }
   }
 
   @OnEvent('order.paid', { async: true })
-  async handleOrderPaidEvent(payload: { orderId: string, userEmail: string, amount: number }) {
+  async handleOrderPaidEvent(payload: {
+    orderId: string;
+    userEmail: string;
+    amount: number;
+  }) {
     const { orderId, userEmail, amount } = payload;
     const email = userEmail || 'cliente@techstore.com';
 

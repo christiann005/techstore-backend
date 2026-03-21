@@ -15,16 +15,26 @@ export class TypeOrmInventoryRepository implements IInventoryRepository {
     return this.repository.find();
   }
 
-  async findByProductId(productId: string, manager?: EntityManager): Promise<InventoryEntity | null> {
-    const repo = manager ? manager.getRepository(InventoryEntity) : this.repository;
+  async findByProductId(
+    productId: string,
+    manager?: EntityManager,
+  ): Promise<InventoryEntity | null> {
+    const repo = manager
+      ? manager.getRepository(InventoryEntity)
+      : this.repository;
     return repo.findOne({
       where: { productId },
       lock: { mode: 'pessimistic_write' },
     });
   }
 
-  async save(inventory: InventoryEntity, manager?: EntityManager): Promise<InventoryEntity> {
-    const repo = manager ? manager.getRepository(InventoryEntity) : this.repository;
+  async save(
+    inventory: InventoryEntity,
+    manager?: EntityManager,
+  ): Promise<InventoryEntity> {
+    const repo = manager
+      ? manager.getRepository(InventoryEntity)
+      : this.repository;
     return repo.save(inventory);
   }
 }

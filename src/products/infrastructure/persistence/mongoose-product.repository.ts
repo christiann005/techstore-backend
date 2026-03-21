@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { IProductRepository, ProductFilters } from '../../domain/product.repository';
+import {
+  IProductRepository,
+  ProductFilters,
+} from '../../domain/product.repository';
 import { Product, Review } from '../../domain/product.entity';
 import { ProductDocument } from './product.schema';
 
@@ -47,8 +50,10 @@ export class MongooseProductRepository implements IProductRepository {
       }
       if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
         query.basePrice = {};
-        if (filters.minPrice !== undefined) query.basePrice.$gte = filters.minPrice;
-        if (filters.maxPrice !== undefined) query.basePrice.$lte = filters.maxPrice;
+        if (filters.minPrice !== undefined)
+          query.basePrice.$gte = filters.minPrice;
+        if (filters.maxPrice !== undefined)
+          query.basePrice.$lte = filters.maxPrice;
       }
     }
 
@@ -90,7 +95,10 @@ export class MongooseProductRepository implements IProductRepository {
     product.reviews.push(review);
 
     // Recalcular Rating Promedio
-    const totalRating = product.reviews.reduce((acc, rev) => acc + rev.rating, 0);
+    const totalRating = product.reviews.reduce(
+      (acc, rev) => acc + rev.rating,
+      0,
+    );
     product.rating = Number((totalRating / product.reviews.length).toFixed(1));
 
     await product.save();

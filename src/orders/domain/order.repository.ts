@@ -1,4 +1,7 @@
-import { OrderEntity, OrderStatus } from '../infrastructure/persistence/order.entity';
+import {
+  OrderEntity,
+  OrderStatus,
+} from '../infrastructure/persistence/order.entity';
 
 export interface IOrderRepository {
   findAll(): Promise<OrderEntity[]>;

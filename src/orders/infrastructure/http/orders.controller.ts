@@ -1,4 +1,14 @@
-import { Controller, Post, Body, Get, UseGuards, Request, Param, Patch } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  UseGuards,
+  Req,
+  Param,
+  Patch,
+} from '@nestjs/common';
+import type { Request } from 'express';
 import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 import { RolesGuard } from '../../../auth/infrastructure/guards/roles.guard';
 import { Roles } from '../../../auth/infrastructure/http/roles.decorator';
@@ -12,14 +22,26 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Post()
-  async create(@Request() req: any, @Body() orderDto: any) {
-    const userId = (req.user as any).userId;
+  async create(
+    @Req() req: Request & { user?: { userId?: string } },
+    @Body()
+    orderDto: {
+      items: {
+        productId: string;
+        quantity: number;
+        productName?: string;
+        productImage?: string;
+        price: number;
+      }[];
+    },
+  ) {
+    const userId = req.user?.userId ?? '';
     return this.ordersService.createOrder(userId, orderDto.items);
   }
 
   @Get('my-orders')
-  async findMyOrders(@Request() req: any) {
-    const userId = (req.user as any).userId;
+  async findMyOrders(@Req() req: Request & { user?: { userId?: string } }) {
+    const userId = req.user?.userId ?? '';
     return this.ordersService.findUserOrders(userId);
   }
 

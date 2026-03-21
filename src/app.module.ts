@@ -20,10 +20,12 @@ import { CacheModule } from '@nestjs/cache-manager';
 @Module({
   imports: [
     // Protección contra Fuerza Bruta (Rate Limiting)
-    ThrottlerModule.forRoot([{
-      ttl: 60000, // 1 minuto
-      limit: 100, // Máximo 100 peticiones globales por minuto por IP
-    }]),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000, // 1 minuto
+        limit: 100, // Máximo 100 peticiones globales por minuto por IP
+      },
+    ]),
 
     // Configuración de Caché (En Memoria por defecto)
     CacheModule.register({

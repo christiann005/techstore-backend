@@ -17,7 +17,7 @@ export class MongooseUserRepository implements IUserRepository {
       (doc._id as any).toString(),
       doc.email,
       doc.fullName,
-      doc.role as UserRole,
+      doc.role,
       doc.addresses,
       doc.isVerified,
       doc.isActive,
@@ -28,7 +28,10 @@ export class MongooseUserRepository implements IUserRepository {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    const doc = await this.userModel.findOne({ email }).select('+password').exec();
+    const doc = await this.userModel
+      .findOne({ email })
+      .select('+password')
+      .exec();
     return doc ? this.mapToDomain(doc) : null;
   }
 
@@ -53,7 +56,9 @@ export class MongooseUserRepository implements IUserRepository {
   }
 
   async update(id: string, user: Partial<User>): Promise<User | null> {
-    const doc = await this.userModel.findByIdAndUpdate(id, user, { new: true }).exec();
+    const doc = await this.userModel
+      .findByIdAndUpdate(id, user, { new: true })
+      .exec();
     return doc ? this.mapToDomain(doc) : null;
   }
 }

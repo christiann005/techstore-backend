@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ProductDocument, ProductSchema } from './infrastructure/persistence/product.schema';
+import {
+  ProductDocument,
+  ProductSchema,
+} from './infrastructure/persistence/product.schema';
 import { MongooseProductRepository } from './infrastructure/persistence/mongoose-product.repository';
 import { IProductRepository } from './domain/product.repository';
 import { ProductsService } from './application/products.service';

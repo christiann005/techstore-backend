@@ -17,7 +17,7 @@ export class Product {
     public basePrice: number,
     public categories: string[],
     public images: string[],
-    public specifications: Record<string, any>, 
+    public specifications: Record<string, any>,
     public rating: number,
     public reviews: Review[],
     public isActive: boolean,

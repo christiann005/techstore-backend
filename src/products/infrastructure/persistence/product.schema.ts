@@ -31,7 +31,7 @@ export class ProductDocument extends Document {
   officialUrl: string;
 
   @Prop({ type: Map, of: String })
- // Flexibilidad total para especificaciones técnicas
+  // Flexibilidad total para especificaciones técnicas
   specifications: Map<string, any>;
 
   @Prop({ default: 0 })

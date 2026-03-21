@@ -16,4 +16,5 @@ export class VerificationCode extends Document {
   createdAt: Date;
 }
 
-export const VerificationCodeSchema = SchemaFactory.createForClass(VerificationCode);
+export const VerificationCodeSchema =
+  SchemaFactory.createForClass(VerificationCode);

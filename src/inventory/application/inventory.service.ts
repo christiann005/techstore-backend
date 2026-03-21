@@ -15,8 +15,8 @@ export class InventoryService {
   }
 
   async updateStock(productId: string, stock: number) {
-    let inventory = await this.repository.findByProductId(productId);
-    
+    const inventory = await this.repository.findByProductId(productId);
+
     if (!inventory) {
       // Si no existe, lo creamos
       const newInv = { productId, stock } as any;
@@ -24,7 +24,7 @@ export class InventoryService {
       this.eventsGateway.emitStockUpdate(productId, stock);
       return saved;
     }
-    
+
     inventory.stock = stock;
     const saved = await this.repository.save(inventory);
     this.eventsGateway.emitStockUpdate(productId, stock);

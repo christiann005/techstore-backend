@@ -24,7 +24,9 @@ export class MailService {
     } catch (err: any) {
       // Surface a clearer error for authentication issues with the SMTP provider
       if (err && err.code === 'EAUTH') {
-        throw new Error('Email authentication failed. Check MAIL_USER and MAIL_PASS (use an app password or proper SMTP credentials)');
+        throw new Error(
+          'Email authentication failed. Check MAIL_USER and MAIL_PASS (use an app password or proper SMTP credentials)',
+        );
       }
       throw err;
     }
