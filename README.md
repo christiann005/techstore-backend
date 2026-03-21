@@ -2,22 +2,24 @@
 
 Backend de alto rendimiento construido con **NestJS**, diseñado bajo principios de Arquitectura Hexagonal y Clean Architecture.
 
-## 🚀 Tecnologías y Arquitectura
+## 🚀 Tecnologías y Arquitectura (Senior Upgrade 2026)
 
-### 🏗️ Estructura de Persistencia Políglota
+### 🏗️ Estructura de Persistencia Políglota e Integridad Híbrida
 El sistema utiliza una estrategia de base de datos híbrida para maximizar eficiencia e integridad:
-*   **PostgreSQL (TypeORM):** Manejo transaccional crítico para **Órdenes** e **Inventario** (Garantía ACID).
-*   **MongoDB (Mongoose):** Catálogo de **Productos** y perfiles de **Usuarios** para flexibilidad de esquemas.
+*   **PostgreSQL (TypeORM):** Fuente de verdad transaccional para **Órdenes** e **Inventario** (Garantía ACID).
+*   **MongoDB (Mongoose):** Catálogo de **Productos** optimizado para lectura rápida y sincronización de stock asíncrona.
+*   **Integridad Híbrida (Saga Choreography):** Sincronización automática de stock entre Postgres y Mongo mediante eventos de dominio (`EventEmitter2`) para asegurar consistencia eventual sin sacrificar rendimiento.
 
-### 🛡️ Seguridad Avanzada
-*   **MFA (2FA):** Autenticación de dos factores implementada con TOTP (Google Authenticator/Authy).
-*   **Rate Limiting:** Protección contra fuerza bruta con `Throttler`.
-*   **JWT & Passport:** Gestión de sesiones segura con cookies e interceptores.
+### 🛡️ Seguridad Avanzada y Gestión de Sesiones
+*   **Refresh Tokens con Rotación:** Sistema de doble token (`access_token` de 15m y `refresh_token` de 7d) persistido en MongoDB con rotación automática para máxima seguridad de sesión.
+*   **MFA (2FA) Completo:** Autenticación de dos factores integrada en el flujo de login. Soporta TOTP (Google Authenticator/Authy) mediante `otplib`.
+*   **Validación de Entorno Estricta:** Implementación de **Zod** para validación de variables de entorno al arranque (Fail-fast strategy).
+*   **Filtro de Excepciones Global:** Estandarización de todas las respuestas de error del sistema para una integración fluida con el frontend.
 
 ### ⚡ Rendimiento y Escalabilidad
 *   **Distributed Locking:** Sistema de bloqueos por producto para evitar condiciones de carrera en el stock durante compras masivas.
-*   **Caché Avanzada:** Capa de caché con `CacheManager` para acelerar el catálogo.
-*   **Event-Driven Search:** Sincronización automática con motores de búsqueda (Meilisearch/Algolia) mediante eventos de dominio.
+*   **Caché Inteligente:** Capa de caché con `CacheManager` para acelerar el catálogo.
+*   **Event-Driven Search:** Sincronización automática con motores de búsqueda mediante eventos de dominio.
 
 ### 💳 Integración de Pagos
 *   **Stripe SDK:** Flujo completo de `PaymentIntents`.
@@ -26,7 +28,7 @@ El sistema utiliza una estrategia de base de datos híbrida para maximizar efici
 ## 🛠️ Instalación y Configuración
 
 1.  `npm install`
-2.  Configurar `.env` basado en `.env.example`.
+2.  Configurar `.env` basado en `.env.example` (Validado por Zod).
 3.  `npm run start:dev`
 
 ## 📖 Documentación de API

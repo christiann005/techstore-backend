@@ -78,4 +78,10 @@ export class ProductsService {
     await this.productRepository.seed(products);
     await this.clearProductsCache();
   }
+
+  async updateProductStock(productId: string, stock: number): Promise<void> {
+    await this.productRepository.updateStock(productId, stock);
+    // Limpiar caché de este producto específico y lista general
+    await this.cacheManager.clear();
+  }
 }

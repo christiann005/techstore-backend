@@ -70,9 +70,26 @@ export class AuthController {
     return this.authService.login(loginDto.email, loginDto.password, response);
   }
 
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  @HttpCode(HttpStatus.OK)
+  @Post('login-2fa')
+  async login2fa(
+    @Body() body: { userId: string; token: string },
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return this.authService.login2fa(body.userId, body.token, response);
+  }
+
+  @Post('refresh')
+  async refresh(@Req() req: Request, @Res({ passthrough: true }) response: Response) {
+    const refreshToken = req.cookies['refresh_token'];
+    return this.authService.refresh(refreshToken, response);
+  }
+
   @Post('logout')
-  logout(@Res({ passthrough: true }) response: Response) {
-    return this.authService.logout(response);
+  logout(@Req() req: Request, @Res({ passthrough: true }) response: Response) {
+    const refreshToken = req.cookies['refresh_token'];
+    return this.authService.logout(refreshToken, response);
   }
 
   @Throttle({ default: { limit: 5, ttl: 60000 } })

@@ -9,10 +9,13 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
+import { verify } from 'otplib';
+import { v4 as uuidv4 } from 'uuid';
 import type { Response } from 'express';
 import { UsersService } from '../../users/application/users.service';
 import { UserRole } from '../../users/domain/user.entity';
 import { VerificationCode } from '../infrastructure/persistence/verification-code.schema';
+import { RefreshToken } from '../infrastructure/persistence/refresh-token.schema';
 import { MailService } from '../../common/mail/mail.service';
 
 @Injectable()
@@ -22,11 +25,57 @@ export class AuthService {
     private readonly jwtService: JwtService,
     @InjectModel(VerificationCode.name)
     private readonly verificationModel: Model<VerificationCode>,
+    @InjectModel(RefreshToken.name)
+    private readonly refreshTokenModel: Model<RefreshToken>,
     private readonly mailService: MailService,
   ) {}
 
   private generateOTP(): string {
     return Math.floor(100000 + Math.random() * 900000).toString();
+  }
+
+  // Helper Senior para manejar tokens
+  private async createSession(user: any, response: Response) {
+    const payload = { sub: user.id, email: user.email, role: user.role };
+    
+    // Access Token (Corto: 15m)
+    const accessToken = this.jwtService.sign(payload);
+    
+    // Refresh Token (Largo: 7d)
+    const refreshToken = uuidv4();
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    // Persistir Refresh Token en MongoDB
+    await this.refreshTokenModel.create({
+      userId: user.id,
+      token: refreshToken,
+      expiresAt,
+    });
+
+    // Inyectar Cookies HttpOnly
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax' as const,
+    };
+
+    response.cookie('access_token', accessToken, {
+      ...cookieOptions,
+      maxAge: 15 * 60 * 1000, // 15 minutos
+    });
+
+    response.cookie('refresh_token', refreshToken, {
+      ...cookieOptions,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
+    });
+
+    return {
+      id: user.id,
+      email: user.email,
+      fullName: user.fullName,
+      role: user.role,
+    };
   }
 
   async register(data: { email: string; password: string; fullName?: string }) {
@@ -81,30 +130,72 @@ export class AuthService {
     const isMatch = await bcrypt.compare(pass, user.password);
     if (!isMatch) throw new UnauthorizedException('Invalid credentials');
 
-    const payload = { sub: user.id, email: user.email, role: user.role };
-    const token = this.jwtService.sign(payload);
+    if (user.isTwoFactorEnabled) {
+      return {
+        mfaRequired: true,
+        userId: user.id,
+        email: user.email,
+        message: 'MFA_REQUIRED',
+      };
+    }
 
-    // Inyectar cookie HttpOnly
-    response.cookie('access_token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 24 * 60 * 60 * 1000, // 24 horas
-    });
+    const userData = await this.createSession(user, response);
 
     return {
       message: 'Login successful',
-      user: {
-        id: user.id,
-        email: user.email,
-        fullName: user.fullName,
-        role: user.role,
-      },
+      user: userData,
     };
   }
 
-  logout(response: Response) {
+  async login2fa(userId: string, token: string, response: Response) {
+    const user = await this.usersService.findById(userId);
+    if (!user || !user.twoFactorSecret) {
+      throw new BadRequestException('MFA not enabled for this user');
+    }
+
+    const { valid } = await verify({
+      token,
+      secret: user.twoFactorSecret,
+    });
+
+    if (!valid) {
+      throw new UnauthorizedException('Invalid authentication code');
+    }
+
+    const userData = await this.createSession(user, response);
+
+    return {
+      message: 'Login successful',
+      user: userData,
+    };
+  }
+
+  async refresh(refreshToken: string, response: Response) {
+    const tokenDoc = await this.refreshTokenModel.findOne({
+      token: refreshToken,
+      isRevoked: false,
+    });
+
+    if (!tokenDoc || tokenDoc.expiresAt < new Date()) {
+      throw new UnauthorizedException('Invalid or expired refresh token');
+    }
+
+    const user = await this.usersService.findById(tokenDoc.userId);
+    if (!user) throw new UnauthorizedException();
+
+    // Rotación de Refresh Token (Seguridad Máxima)
+    await this.refreshTokenModel.deleteOne({ _id: tokenDoc._id });
+    
+    const userData = await this.createSession(user, response);
+    return { user: userData };
+  }
+
+  async logout(refreshToken: string, response: Response) {
+    if (refreshToken) {
+      await this.refreshTokenModel.deleteOne({ token: refreshToken });
+    }
     response.clearCookie('access_token');
+    response.clearCookie('refresh_token');
     return { message: 'Logged out successfully' };
   }
 

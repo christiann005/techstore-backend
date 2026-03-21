@@ -1,5 +1,5 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { authenticator } from 'otplib';
+import { generateSecret, generateURI, verify } from 'otplib';
 import { toDataURL } from 'qrcode';
 import { UsersService } from '../../users/application/users.service';
 
@@ -8,8 +8,12 @@ export class TwoFactorService {
   constructor(private readonly usersService: UsersService) {}
 
   async generateSecret(userId: string, email: string) {
-    const secret = authenticator.generateSecret();
-    const otpauthUrl = authenticator.keyuri(email, 'TechStore Pro', secret);
+    const secret = generateSecret();
+    const otpauthUrl = generateURI({
+      issuer: 'TechStore Pro',
+      label: email,
+      secret,
+    });
 
     // Guardar secret temporalmente en el usuario (deshabilitado hasta verificar)
     await this.usersService.update(userId, { twoFactorSecret: secret });
@@ -27,12 +31,12 @@ export class TwoFactorService {
       throw new BadRequestException('MFA not initiated for this user');
     }
 
-    const isValid = authenticator.verify({
+    const { valid } = await verify({
       token,
       secret: user.twoFactorSecret,
     });
 
-    if (isValid) {
+    if (valid) {
       // Activar definitivamente el 2FA
       await this.usersService.update(userId, { isTwoFactorEnabled: true });
       return true;

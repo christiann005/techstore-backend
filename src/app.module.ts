@@ -17,6 +17,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { CacheModule } from '@nestjs/cache-manager';
+import { validateEnv } from './config/env.validation';
 
 @Module({
   imports: [
@@ -34,10 +35,11 @@ import { CacheModule } from '@nestjs/cache-manager';
       ttl: 600000, // 10 minutos
     }),
 
-    // Configuración global de variables de entorno
+    // Configuración global de variables de entorno con Validación Zod (Senior)
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+      validate: validateEnv,
     }),
 
     // Configuración de Correo

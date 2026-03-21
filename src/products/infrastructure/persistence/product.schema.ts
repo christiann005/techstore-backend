@@ -37,6 +37,9 @@ export class ProductDocument extends Document {
   @Prop({ default: 0 })
   rating: number;
 
+  @Prop({ default: 0 })
+  stock: number;
+
   @Prop({
     type: [
       {

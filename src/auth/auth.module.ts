@@ -12,6 +12,10 @@ import {
   VerificationCode,
   VerificationCodeSchema,
 } from './infrastructure/persistence/verification-code.schema';
+import {
+  RefreshToken,
+  RefreshTokenSchema,
+} from './infrastructure/persistence/refresh-token.schema';
 import { MailService } from '../common/mail/mail.service';
 
 @Module({
@@ -20,6 +24,7 @@ import { MailService } from '../common/mail/mail.service';
     PassportModule,
     MongooseModule.forFeature([
       { name: VerificationCode.name, schema: VerificationCodeSchema },
+      { name: RefreshToken.name, schema: RefreshTokenSchema },
     ]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -27,7 +32,7 @@ import { MailService } from '../common/mail/mail.service';
       useFactory: (config: ConfigService) => ({
         secret: config.get<string>('JWT_SECRET'),
         signOptions: {
-          expiresIn: (config.get<string>('JWT_EXPIRATION') || '24h') as any,
+          expiresIn: '15m', // Access token corto para seguridad (Senior)
         },
       }),
     }),

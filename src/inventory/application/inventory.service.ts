@@ -14,6 +14,10 @@ export class InventoryService {
     return this.repository.findAll();
   }
 
+  async getByProductId(productId: string) {
+    return this.repository.findByProductId(productId);
+  }
+
   async updateStock(productId: string, stock: number) {
     const inventory = await this.repository.findByProductId(productId);
 

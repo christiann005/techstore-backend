@@ -17,6 +17,7 @@ export interface IProductRepository {
   addReview(sku: string, review: Review): Promise<Product | null>;
   delete(id: string): Promise<boolean>;
   seed(products: Partial<Product>[]): Promise<void>;
+  updateStock(productId: string, stock: number): Promise<void>;
 }
 
 export const IProductRepository = Symbol('IProductRepository');

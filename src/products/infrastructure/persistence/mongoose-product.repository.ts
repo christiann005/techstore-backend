@@ -139,4 +139,10 @@ export class MongooseProductRepository implements IProductRepository {
     await this.productModel.deleteMany({});
     await this.productModel.insertMany(products);
   }
+
+  async updateStock(productId: string, stock: number): Promise<void> {
+    await this.productModel
+      .findByIdAndUpdate(productId, { stock }, { new: true })
+      .exec();
+  }
 }

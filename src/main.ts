@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
@@ -23,6 +24,9 @@ async function bootstrap() {
 
   // Habilitar cookie-parser para el manejo de tokens seguros
   app.use(cookieParser());
+
+  // Aplicar Filtro de Excepciones Global (Arquitectura Senior)
+  app.useGlobalFilters(new AllExceptionsFilter());
 
   // Habilitar CORS con credenciales permitidas para cookies
   app.enableCors({
