@@ -12,21 +12,24 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         // Prefer cookie-parser if present, otherwise parse header
         const cookies = (req as Request & { cookies?: Record<string, string> })
           ?.cookies;
-        if (cookies && cookies['access_token']) return cookies['access_token'];
+        if (cookies && typeof cookies['access_token'] === 'string') return cookies['access_token'];
         const header = req.headers?.cookie;
         if (!header) return null;
         // Simple cookie parser without external dependency to keep types strict
         const parsed = header
           .split(';')
           .map((p) => p.trim())
-          .reduce((acc: Record<string, string>, part) => {
-            const idx = part.indexOf('=');
-            if (idx === -1) return acc;
-            const key = part.substring(0, idx).trim();
-            const val = decodeURIComponent(part.substring(idx + 1));
-            acc[key] = val;
-            return acc;
-          }, {} as Record<string, string>);
+          .reduce(
+            (acc: Record<string, string>, part) => {
+              const idx = part.indexOf('=');
+              if (idx === -1) return acc;
+              const key = part.substring(0, idx).trim();
+              const val = decodeURIComponent(part.substring(idx + 1));
+              acc[key] = val;
+              return acc;
+            },
+            {} as Record<string, string>,
+          );
         return parsed['access_token'] ?? null;
       },
 
