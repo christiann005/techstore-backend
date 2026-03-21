@@ -98,7 +98,7 @@ export class MongooseProductRepository implements IProductRepository {
 
   async update(id: string, product: Partial<Product>): Promise<Product | null> {
     const doc = await this.productModel
-      .findByIdAndUpdate(id, product, { new: true })
+      .findByIdAndUpdate(id, product, { returnDocument: 'after' })
       .exec();
     return doc ? this.mapToDomain(doc) : null;
   }
@@ -142,7 +142,7 @@ export class MongooseProductRepository implements IProductRepository {
 
   async updateStock(productId: string, stock: number): Promise<void> {
     await this.productModel
-      .findByIdAndUpdate(productId, { stock }, { new: true })
+      .findByIdAndUpdate(productId, { stock }, { returnDocument: 'after' })
       .exec();
   }
 }

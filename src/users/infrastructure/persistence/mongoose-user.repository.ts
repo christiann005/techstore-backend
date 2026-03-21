@@ -57,7 +57,7 @@ export class MongooseUserRepository implements IUserRepository {
 
   async update(id: string, user: Partial<User>): Promise<User | null> {
     const doc = await this.userModel
-      .findByIdAndUpdate(id, user, { new: true })
+      .findByIdAndUpdate(id, user, { returnDocument: 'after' })
       .exec();
     return doc ? this.mapToDomain(doc) : null;
   }
