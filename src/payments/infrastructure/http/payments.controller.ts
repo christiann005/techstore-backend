@@ -16,7 +16,7 @@ export class PaymentsController {
     @Headers('stripe-signature') sig: string,
     @Req() req: Request & { rawBody?: Buffer },
   ) {
-    const raw = (req as any).rawBody ?? Buffer.from('');
+    const raw = (req as unknown as { rawBody?: Buffer }).rawBody ?? Buffer.from('');
     return this.paymentsService.handleWebhook(sig, raw);
   }
 }

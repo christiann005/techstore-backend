@@ -21,14 +21,15 @@ export class MailService {
           </div>
         `,
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       // Surface a clearer error for authentication issues with the SMTP provider
-      if (err && err.code === 'EAUTH') {
+      const e = err as { code?: string; message?: string };
+      if (e.code === 'EAUTH') {
         throw new Error(
           'Email authentication failed. Check MAIL_USER and MAIL_PASS (use an app password or proper SMTP credentials)',
         );
       }
-      throw err;
+      throw err as Error;
     }
   }
 

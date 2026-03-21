@@ -19,8 +19,8 @@ export class InventoryService {
 
     if (!inventory) {
       // Si no existe, lo creamos
-      const newInv = { productId, stock } as any;
-      const saved = await this.repository.save(newInv);
+      const newInv = { productId, stock };
+      const saved = await this.repository.save(newInv as any);
       this.eventsGateway.emitStockUpdate(productId, stock);
       return saved;
     }

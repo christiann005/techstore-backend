@@ -38,9 +38,10 @@ export class OrderNotifierListener {
         `,
       });
       this.logger.log(`📧 Correo de creación enviado exitosamente a ${email}`);
-    } catch (error) {
+    } catch (error: unknown) {
+      const msg = (error as Error).message ?? String(error);
       this.logger.error(
-        `❌ Error enviando correo de creación: ${error.message}`,
+        `❌ Error enviando correo de creación: ${msg}`,
       );
     }
   }
@@ -76,8 +77,9 @@ export class OrderNotifierListener {
         `,
       });
       this.logger.log(`📧 Correo de confirmación de PAGO enviado a ${email}`);
-    } catch (error) {
-      this.logger.error(`❌ Error enviando correo de pago: ${error.message}`);
+    } catch (error: unknown) {
+      const msg = (error as Error).message ?? String(error);
+      this.logger.error(`❌ Error enviando correo de pago: ${msg}`);
     }
   }
 }

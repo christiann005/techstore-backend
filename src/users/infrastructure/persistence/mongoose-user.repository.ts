@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { IUserRepository } from '../../domain/user.repository';
@@ -14,15 +14,15 @@ export class MongooseUserRepository implements IUserRepository {
 
   private mapToDomain(doc: UserDocument): User {
     return new User(
-      (doc._id as any).toString(),
+      String(doc._id),
       doc.email,
       doc.fullName,
       doc.role,
       doc.addresses,
       doc.isVerified,
       doc.isActive,
-      (doc as any).createdAt,
-      (doc as any).updatedAt,
+      doc.createdAt as Date,
+      doc.updatedAt as Date,
       doc.password, // Password al final según el cambio previo en la entidad
     );
   }
@@ -45,13 +45,12 @@ export class MongooseUserRepository implements IUserRepository {
       const created = new this.userModel(user);
       const doc = await created.save();
       return this.mapToDomain(doc);
-    } catch (err: any) {
-      // Handle duplicate key error from MongoDB (e.g., email already exists)
-      if (err && err.code === 11000) {
-        const { ConflictException } = require('@nestjs/common');
+    } catch (err: unknown) {
+      const e = err as { code?: number };
+      if (e.code === 11000) {
         throw new ConflictException('Email already in use');
       }
-      throw err;
+      throw err as Error;
     }
   }
 
